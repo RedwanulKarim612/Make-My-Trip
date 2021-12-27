@@ -1,6 +1,8 @@
 package com.MakeMyTrip;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.stereotype.Repository;
@@ -24,12 +26,9 @@ public class CompanyDAO extends JdbcDaoSupport {
         return getJdbcTemplate().queryForObject(sql,Integer.class, companyId)==1;
     }
 
-    public Company getCompanyById(String companyId) {
-        if(companyExists(companyId)){
-            String sql = "SELECT * FROM company WHERE company_id = ?";
-            return  getJdbcTemplate().queryForObject(sql,BeanPropertyRowMapper.newInstance(Company.class),companyId);
-        }
-        return null;
+    public Company getCompanyById(String companyId) throws EmptyResultDataAccessException {
+        String sql = "SELECT * FROM company WHERE company_id = ?";
+        return  getJdbcTemplate().queryForObject(sql,BeanPropertyRowMapper.newInstance(Company.class),companyId);
     }
 
     public List<Company> getAllCompanies() {
@@ -37,10 +36,9 @@ public class CompanyDAO extends JdbcDaoSupport {
         return getJdbcTemplate().query(sql, BeanPropertyRowMapper.newInstance(Company.class));
     }
 
-    public boolean addCompany(Company company){
-        if(companyExists(company.getCompanyId())) return false;
+    public void addCompany(Company company) throws DuplicateKeyException {
         String sql = "INSERT INTO company VALUES(?,?)";
         getJdbcTemplate().update(sql,company.getCompanyId(),company.getCompanyName());
-        return true;
+
     }
 }
