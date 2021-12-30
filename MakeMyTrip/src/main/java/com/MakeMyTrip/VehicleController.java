@@ -64,4 +64,14 @@ public class VehicleController {
             return "cannot delete vehicle";
         }
     }
+
+    @PutMapping("/admin/vehicles/{vehicleId}")
+    public void editVehicle(@PathVariable String vehicleId, Vehicle vehicle){
+        try{
+            vehicleDAO.editVehicle(vehicleId, vehicle);
+        }
+        catch (DataIntegrityViolationException e){
+            //cannot edit primary key
+        }
+    }
 }

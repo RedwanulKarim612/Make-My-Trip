@@ -48,13 +48,5 @@ public class Vehicle {
         CompanyId = companyId;
     }
 
-    @Override
-    public String toString() {
-        return "Vehicle{" +
-                "vehicleId='" + vehicleId + '\'' +
-                ", registrationNo='" + registrationNo + '\'' +
-                ", ModelId='" + ModelId + '\'' +
-                ", CompanyId='" + CompanyId + '\'' +
-                '}';
-    }
+
 }
