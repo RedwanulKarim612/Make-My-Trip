@@ -29,14 +29,15 @@ public class ModelDAO extends JdbcDaoSupport {
         return models;
     }
 
-    public void addModel(Model model) throws DuplicateKeyException,DataIntegrityViolationException {
-        String sql = "INSERT INTO MODEL VALUES(?,?,?,?)";
-        getJdbcTemplate().update(sql,model.getModelId(),model.getType(),Integer.toString(model.getBusinessSeats()), Integer.toString(model.getEconomicSeats()));
-    }
-
     public Model getModelById(String modelId) throws EmptyResultDataAccessException{
         String sql = "SELECT * FROM MODEL WHERE model_id = ?";
         return getJdbcTemplate().queryForObject(sql,BeanPropertyRowMapper.newInstance(Model.class), modelId);
+    }
+
+
+    public void addModel(Model model) throws DuplicateKeyException,DataIntegrityViolationException {
+        String sql = "INSERT INTO MODEL VALUES(?,?,?,?)";
+        getJdbcTemplate().update(sql,model.getModelId(),model.getType(),Integer.toString(model.getBusinessSeats()), Integer.toString(model.getEconomicSeats()));
     }
 
     public boolean modelExists(String modelId){

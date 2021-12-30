@@ -65,4 +65,20 @@ public class VehicleDAO extends JdbcDaoSupport {
         String sql = "DELETE FROM vehicle WHERE vehicle_id = ?";
         getJdbcTemplate().update(sql,vehicleId);
     }
+
+    public void editVehicle(String vehicleId,Vehicle vehicle) throws DataIntegrityViolationException{
+        if(!vehicleId.equals(vehicle.getVehicleId())) throw new DataIntegrityViolationException("cannot edit primary key");
+        String sql = "UPDATE vehicle SET " +
+                "vehicle_id = ?," +
+                "registration_no = ?," +
+                "model_id = ?," +
+                "company_id = ? " +
+                "WHERE vehicle_id = ?";
+
+        getJdbcTemplate().update(sql,vehicle.getVehicleId(),
+                vehicle.getRegistrationNo(),
+                vehicle.getModelId(),
+                vehicle.getCompanyId(),
+                vehicleId);
+    }
 }
