@@ -16,36 +16,61 @@ public class ModelController {
     ModelDAO modelDAO;
 
     @RequestMapping("admin/models")
-    public List<Model> getAllModels(){
-        return modelDAO.getAllModels();
+    @PostMapping(path = "admin/models" , params = "action=reset")
+    public ModelAndView getAllModels() {
+        ModelAndView modelAndView = new ModelAndView("admin-models");
+        modelAndView.addObject("models",modelDAO.getAllModels());
+        return modelAndView;
+
     }
 
     @RequestMapping("admin/models/{modelId}")
     public ModelAndView getModelById(@PathVariable String modelId){
 
-        ModelAndView modelAndView = new ModelAndView("admin-model-single");
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("admin-model-single");
+
         try{
             Model model = modelDAO.getModelById(modelId);
             modelAndView.addObject("model",model);
         }
         catch (EmptyResultDataAccessException e){
+
             //no model found by id
         }
         return modelAndView;
     }
 
-    @PostMapping(path = "admin/models")
-    public String addModel(@RequestBody Model model){
+
+
+
+    @PostMapping(path = "/admin/models/add",params = "action=add")
+    public ModelAndView addModel(@ModelAttribute ("model") Model model){
+        System.out.println(model.getModelId());
+        ModelAndView modelAndView = new ModelAndView("admin-models");
         try{
             modelDAO.addModel(model);
-            return "success";
+
         }
         catch (DuplicateKeyException e){
-            return "duplicate model id";
         }
         catch (DataIntegrityViolationException e){
-            return "invalid model type";
         }
+        return modelAndView;
+    }
+
+
+    @PostMapping(path = "admin/models", params = "action=search")
+    public ModelAndView searchModel(@RequestParam String modelId){
+
+        ModelAndView modelAndView = new ModelAndView("admin-models");
+        try{
+            modelAndView.addObject("models",modelDAO.getModelById(modelId));
+        }
+        catch (EmptyResultDataAccessException e){
+            //no model;
+        }
+        return modelAndView;
     }
 
     @DeleteMapping(path = "admin/models/{modelId}")

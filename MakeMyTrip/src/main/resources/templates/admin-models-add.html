@@ -9,8 +9,9 @@
     <link href="https://getbootstrap.com/docs/4.0/examples/signin/signin.css" rel="stylesheet" crossorigin="anonymous">
 </head>
 <body>
-<div class = "nav-bar">
+<div class = "nav-bar" style="margin-top: 2%">
     <div class="container">
+
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
                 <a href="#" class="navbar-brand"> Make My Trip</a>
@@ -29,13 +30,35 @@
         </nav>
 
 
-
-
-    </div>
-
-    <div>
-
     </div>
 </div>
+
+<div class="main-div">
+    <h3>Add New Model</h3>
+    <form th:action="@{/admin/models/add}" method="post" th:object="${model}" >
+        <div class = "input-group" style="width: 60%; margin: 1em auto 1em auto">
+            <div class="mb-3">
+                <label class="form-level" for="modelId"> Model Id: </label>
+                <input class = "form-control" type="text" id="modelId" th:field="*{modelId}"  size="50" >
+            </div>
+            <div class="mb-3">
+                <label class="form-level" for="type"> Model Type: </label>
+                <input class = "form-control" type="text" id="type" th:field="*{type}" >
+            </div>
+            <div class="mb-3">
+                <label class="form-level" for="businessSeats"> Number of Seats in Business Class: </label>
+                <input class = "form-control" type="number" id="businessSeats" th:field="*{businessSeats}"  size="50" >
+            </div>
+            <div class="mb-3">
+                <label class="form-level" for="economicSeats"> Number of Seats in Economy Class </label>
+                <input class = "form-control" type="number" id="economicSeats" th:field="*{economicSeats}"  size="50" >
+            </div>
+
+            <button type="submit" name="action" value = "add" class="btn btn-info" style="margin-right: .5em">Add</button>
+            <button type="submit" name="action" value = "cancel" class="btn btn-info">Cancel</button>
+        </div>
+    </form>
+</div>
+
 </body>
 </html>
