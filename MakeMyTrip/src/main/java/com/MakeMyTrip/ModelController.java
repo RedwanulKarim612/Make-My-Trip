@@ -46,18 +46,19 @@ public class ModelController {
 
     @PostMapping(path = "/admin/models/add",params = "action=add")
     public ModelAndView addModel(@ModelAttribute ("model") Model model){
-        System.out.println(model.getModelId());
-        ModelAndView modelAndView = new ModelAndView("admin-models");
+//        System.out.println(model.getModelId());
         try{
             modelDAO.addModel(model);
-
+            return searchModel(model.getModelId());
+        } catch (DataIntegrityViolationException e){
+            return getAllModels();
         }
-        catch (DuplicateKeyException e){
-        }
-        catch (DataIntegrityViolationException e){
-        }
-        return modelAndView;
     }
+    @PostMapping(path = "/admin/models/add",params = "action=cancel")
+    public ModelAndView cancelAdd(){
+        return getAllModels();
+    }
+
 
 
     @PostMapping(path = "admin/models", params = "action=search")

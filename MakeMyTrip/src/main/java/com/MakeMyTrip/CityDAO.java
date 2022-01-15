@@ -10,10 +10,13 @@ import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class CityDAO extends JdbcDaoSupport {
+
     @Autowired
     DataSource dataSource;
     @PostConstruct
@@ -26,9 +29,26 @@ public class CityDAO extends JdbcDaoSupport {
         return getJdbcTemplate().query(sql, BeanPropertyRowMapper.newInstance(City.class));
     }
 
-    public City getCityById(String cityId) throws EmptyResultDataAccessException{
-        String sql = "SELECT * FROM city WHERE city_id = ?";
-        return getJdbcTemplate().queryForObject(sql, BeanPropertyRowMapper.newInstance(City.class),cityId);
+    public List<Map<String, Object>> getAllCitiesWithCountry() throws EmptyResultDataAccessException{
+        String sql = "SELECT CT.CITY_ID , CT.CITY_NAME, CN.COUNTRY_ID, CN.COUNTRY_NAME, CT.LOCAL_TIME\n" +
+                "FROM CITY CT \n" +
+                "JOIN COUNTRY CN\n" +
+                "ON(CT.COUNTRY_ID = CN.COUNTRY_ID)";
+
+        return getJdbcTemplate().queryForList(sql);
+    }
+
+    public List<Map<String, Object>> getCityById(String cityId) throws EmptyResultDataAccessException{
+        String sql = "SELECT CT.CITY_ID , CT.CITY_NAME, CN.COUNTRY_ID, CN.COUNTRY_NAME, CT.LOCAL_TIME\n" +
+                "FROM CITY CT \n" +
+                "JOIN COUNTRY CN\n" +
+                "ON(CT.COUNTRY_ID = CN.COUNTRY_ID) " +
+                "WHERE CT.CITY_ID = ?";
+        Map<String, Object> mp =  getJdbcTemplate().queryForMap(sql,cityId);
+        System.out.println(mp.keySet());
+        List<Map<String, Object>> l =new ArrayList<>();
+        l.add(mp);
+        return l;
     }
 
 

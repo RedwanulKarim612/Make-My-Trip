@@ -12,11 +12,13 @@ public class CityController {
     @Autowired
     CityDAO cityDAO;
 
-    @GetMapping(path = "admin/cities")
+    @RequestMapping("admin/cities")
+    @PostMapping(path = "admin/cities" , params = "action=reset")
+
     public ModelAndView getAllCities(){
-        ModelAndView modelAndView = new ModelAndView();
+        ModelAndView modelAndView = new ModelAndView("admin-cities");
         try{
-            modelAndView.addObject("cities", cityDAO.getAllCities());
+            modelAndView.addObject("cities", cityDAO.getAllCitiesWithCountry());
         }
         catch (EmptyResultDataAccessException e){
             //
@@ -37,7 +39,7 @@ public class CityController {
         return modelAndView;
     }
 
-    @PostMapping(path = "admin/cities")
+    @PostMapping(path = "admin/cities/add")
     public String addCity(@RequestBody City city){
         try{
             cityDAO.addCity(city);
@@ -46,6 +48,18 @@ public class CityController {
         catch (DataIntegrityViolationException e){
             return "failed";
         }
+    }
+
+    @PostMapping(path = "admin/cities" ,params = "action=search")
+    public ModelAndView searchCity(@RequestParam String cityId){
+        ModelAndView modelAndView = new ModelAndView("admin-cities");
+        try{
+            modelAndView.addObject("cities",cityDAO.getCityById(cityId));
+        }
+        catch (EmptyResultDataAccessException e){
+            //no model;
+        }
+        return modelAndView;
     }
 
     @PutMapping(path = "admin/cities/{cityId}")

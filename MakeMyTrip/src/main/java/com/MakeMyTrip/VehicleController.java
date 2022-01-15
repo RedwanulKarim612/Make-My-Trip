@@ -6,6 +6,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.text.ParseException;
@@ -17,9 +18,11 @@ public class VehicleController {
     VehicleDAO vehicleDAO;
 
     @GetMapping("/admin/vehicles")
-    public List<Vehicle> getAllVehicles(){
+    public ModelAndView getAllVehicles(){
+        ModelAndView modelAndView = new ModelAndView("admin-vehicles");
         try{
-            return vehicleDAO.getAllVehicles();
+            modelAndView.addObject("vehicles", vehicleDAO.getAllVehicles());
+            return modelAndView;
         }
         catch (EmptyResultDataAccessException e){
             return null;

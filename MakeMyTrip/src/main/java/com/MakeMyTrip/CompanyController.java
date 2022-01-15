@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
@@ -12,9 +13,11 @@ public class CompanyController {
     @Autowired
     CompanyDAO companyDAO;
 
-    @GetMapping(path = "admin/companies")
-    public List<Company> getAllCompanies(){
-        return companyDAO.getAllCompanies();
+    @RequestMapping("/admin/companies")
+    public ModelAndView getAllCompanies(){
+        ModelAndView modelAndView = new ModelAndView("admin-companies");
+        modelAndView.addObject("companies", companyDAO.getAllCompanies());
+        return modelAndView;
     }
 
     @GetMapping(path = "admin/companies/{companyId}")

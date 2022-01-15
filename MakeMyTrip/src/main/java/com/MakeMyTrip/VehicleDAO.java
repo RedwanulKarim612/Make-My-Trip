@@ -10,12 +10,12 @@ import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class VehicleDAO extends JdbcDaoSupport {
@@ -50,9 +50,13 @@ public class VehicleDAO extends JdbcDaoSupport {
         return true;
     }
 
-    public List<Vehicle> getAllVehicles() throws EmptyResultDataAccessException{
-        String sql = "SELECT * FROM vehicle ";
-        return getJdbcTemplate().query(sql, BeanPropertyRowMapper.newInstance(Vehicle.class));
+    public List<Map<String, Object>> getAllVehicles() throws EmptyResultDataAccessException{
+        String sql = "SELECT V.VEHICLE_ID, V.REGISTRATION_NO, V.DATE_ADDED, V.MODEL_ID, V.COMPANY_ID , C.COMPANY_NAME\n" +
+                "from VEHICLE V \n" +
+                "JOIN COMPANY C\n" +
+                "ON (V.COMPANY_ID = C.COMPANY_ID)\n" +
+                "ORDER BY VEHICLE_ID";
+        return getJdbcTemplate().queryForList(sql);
     }
 
     public Vehicle getVehicleById(String vehicleId) throws EmptyResultDataAccessException {

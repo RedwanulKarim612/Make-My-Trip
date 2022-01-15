@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
@@ -13,48 +14,86 @@ public class CountryController {
     @Autowired
     CountryDAO countryDAO;
 
-    @GetMapping(path = "/admin/countries")
-    public List<Country> getAllCountries(){
-        return countryDAO.getAllCountries();
+    @RequestMapping("admin/countries")
+    @PostMapping(path = "admin/countries" , params = "action=reset")
+    public ModelAndView getAllCountries() {
+        ModelAndView modelAndView = new ModelAndView("admin-countries");
+        modelAndView.addObject("countries" , countryDAO.getAllCountries());
+        return modelAndView;
     }
 
     @GetMapping(path = "/admin/countries/{countryId}")
-    public Country getCountryById(@PathVariable String countryId){
+    public ModelAndView getCountryById(@PathVariable String countryId){
+        ModelAndView modelAndView = new ModelAndView("admin-country-single");
         try{
-            return countryDAO.getCountryById(countryId);
+            modelAndView.addObject("country",countryDAO.getCountryById(countryId));
+            return modelAndView;
         }
         catch (EmptyResultDataAccessException e){
             return null;
         }
     }
 
-    @PostMapping(path = "/admin/countries")
-    public void addCountry(@RequestBody Country country){
+    @PostMapping(path = "/admin/countries/add", params = "action=add")
+    public ModelAndView addCountry(@ModelAttribute ("country") Country country){
         try{
             countryDAO.addCountry(country);
+            return searchCountry(country.getCountryId());
         }
         catch (DataIntegrityViolationException e){
+            return getAllCountries();
             //duplicate primary key
         }
     }
 
-    @DeleteMapping(path = "/admin/countries/{countryId}")
-    public void deleteCountry(@PathVariable String countryId){
+    @PostMapping(path = "/admin/countries/add", params = "action=cancel")
+    public ModelAndView cancelAdd(){
+        return getAllCountries();
+    }
+
+
+    @PostMapping(path = "admin/countries", params = "action=search")
+    public ModelAndView searchCountry(@RequestParam String countryId){
+        ModelAndView modelAndView = new ModelAndView("admin-countries");
+        try{
+            modelAndView.addObject("countries", countryDAO.getCountryById(countryId));
+        }
+        catch (EmptyResultDataAccessException e){
+
+        }
+        return modelAndView;
+    }
+
+    @PostMapping(path = "/admin/countries/{countryId}", params = "action=delete")
+    public ModelAndView deleteCountry(@PathVariable String countryId){
         try{
             countryDAO.deleteCountry(countryId);
+            return getAllCountries();
         }
         catch (DataIntegrityViolationException e){
+            return null;
             //cannot delete country, linked with city
         }
     }
 
-    @PutMapping(path = "/admin/countries/{countryId}")
-    public void editCountry(@PathVariable String countryId,@RequestBody Country country){
+    @RequestMapping("/admin/countries/{countryId}/edit")
+    public ModelAndView getEditPage(@PathVariable String countryId){
+        ModelAndView modelAndView = new ModelAndView("admin-country-edit");
+        modelAndView.addObject("country",countryDAO.getCountryById(countryId));
+        return modelAndView;
+    }
+
+
+    @PostMapping(path = "/admin/countries/{countryId}/edit", params = "action=save")
+    public ModelAndView editCountry(@PathVariable String countryId,Country country){
         try{
             countryDAO.editCountry(countryId, country);
+            ModelAndView modelAndView = new ModelAndView("admin-country-edit");
+            return getCountryById(countryId);
         }
         catch (DataIntegrityViolationException e){
             //cannot edit primary key
+            return null;
         }
     }
 
