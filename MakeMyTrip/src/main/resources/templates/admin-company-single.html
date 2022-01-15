@@ -33,20 +33,18 @@
 
 <div class="main-div" >
     <div>
-        <h3> Country Information </h3>
+        <h3> Company Information </h3>
     </div>
     <div class="info-div">
-        <h5> <b>Model Id :</b>  <span th:text="${model.modelId}"></span> </h5>
-        <h5> <b>type :</b>  <span th:text="${model.type}"></span> </h5>
-        <h5> <b>Seats in Business Class :</b>  <span th:text="${model.businessSeats}"></span> </h5>
-        <h5> <b>Seats in Economic Class :</b>  <span th:text="${model.economicSeats}"></span> </h5>
+        <h5> <b>Company Id :</b>  <span th:text="${company.companyId}"></span> </h5>
+        <h5> <b>Company Name :</b>  <span th:text="${company.companyName}"></span> </h5>
     </div>
 
     <div style="display: flex">
-        <a th:href="@{'/admin/models/' + ${model.modelId} + '/edit'}">
+        <a th:href="@{'/admin/companies/' + ${company.companyId} + '/edit'}">
             <button  value = "edit" class="btn btn-lg btn-secondary" style="margin-right: 1em" >Edit</button>
         </a>
-        <form th:action="@{'/admin/models/' + ${model.modelId}}" method="post" >
+        <form th:action="@{'/admin/companies/' + ${company.companyId}}" method="post" >
             <div class="form-group align-bottom" >
 
                 <button type="submit" name="action" value = "delete" class="btn btn-lg btn-danger" >Delete</button>

@@ -16,10 +16,10 @@
                 <a href="#" class="navbar-brand"> Make My Trip</a>
 
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link" href="#">home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Trips</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Vehicles</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Models</a></li>
+                    <li class="nav-item"><a class="nav-link" href="admin/home">home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/admin/trips">Trips</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/admin/vehicles">Vehicles</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/admin/models">Models</a></li>
                     <li class="nav-item"><a class="nav-link" href="/admin/companies">Companies</a></li>
                     <li class="nav-item"><a class="nav-link" href="/admin/cities">Cities</a></li>
                     <li class="nav-item"><a class="nav-link" href="/admin/countries">Countries</a></li>
@@ -31,6 +31,29 @@
     </div>
 </div>
 
+<div class="main-div" >
+    <div>
+        <h3> Country Information </h3>
+    </div>
+    <div class="info-div">
+        <h5> <b>Model Id :</b>  <span th:text="${model.modelId}"></span> </h5>
+        <h5> <b>type :</b>  <span th:text="${model.type}"></span> </h5>
+        <h5> <b>Seats in Business Class :</b>  <span th:text="${model.businessSeats}"></span> </h5>
+        <h5> <b>Seats in Economic Class :</b>  <span th:text="${model.economicSeats}"></span> </h5>
+    </div>
 
+    <div style="display: flex">
+        <a th:href="@{'/admin/models/' + ${model.modelId} + '/edit'}">
+            <button  value = "edit" class="btn btn-lg btn-secondary" style="margin-right: 1em" >Edit</button>
+        </a>
+        <form th:action="@{'/admin/models/' + ${model.modelId}}" method="post" >
+            <div class="form-group align-bottom" >
+
+                <button type="submit" name="action" value = "delete" class="btn btn-lg btn-danger" >Delete</button>
+            </div>
+        </form>
+    </div>
+
+</div>
 </body>
 </html>

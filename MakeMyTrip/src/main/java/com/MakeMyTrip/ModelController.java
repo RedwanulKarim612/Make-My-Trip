@@ -49,7 +49,7 @@ public class ModelController {
 //        System.out.println(model.getModelId());
         try{
             modelDAO.addModel(model);
-            return searchModel(model.getModelId());
+            return getModelById(model.getModelId());
         } catch (DataIntegrityViolationException e){
             return getAllModels();
         }
@@ -74,25 +74,41 @@ public class ModelController {
         return modelAndView;
     }
 
-    @DeleteMapping(path = "admin/models/{modelId}")
-    public String deleteModel(@PathVariable String modelId){
+    @PostMapping(path = "admin/models/{modelId}", params = "action=delete")
+    public ModelAndView deleteModel(@PathVariable String modelId){
         try{
             modelDAO.deleteModel(modelId);
-            return "success";
+            return getAllModels();
         }
         catch (DataIntegrityViolationException e){
-            return "Cannot delete model";
+            return getModelById(modelId);
         }
     }
 
-    @PutMapping(path = "admin/models/{modelId}")
-    public String editModel(@PathVariable String modelId, @RequestBody Model model){
+    @RequestMapping("/admin/models/{modelId}/edit")
+    public ModelAndView getEditPage(@PathVariable String modelId){
+        ModelAndView modelAndView = new ModelAndView("admin-model-edit");
+        modelAndView.addObject("model",modelDAO.getModelById(modelId));
+        return modelAndView;
+    }
+
+
+    @PostMapping(path = "/admin/models/{modelId}/edit", params = "action=save")
+    public ModelAndView editModel(@PathVariable String modelId, Model model){
         try{
             modelDAO.editModel(modelId, model);
-            return "success";
+            ModelAndView modelAndView = new ModelAndView("admin-model-edit");
+            return getModelById(modelId);
         }
         catch (DataIntegrityViolationException e){
-            return "Cannot edit model id";
+            //cannot edit primary key
+            return null;
         }
     }
+    @PostMapping(path = "/admin/models/{modelId}/edit", params = "action=cancel")
+    public ModelAndView cancelEdit(@PathVariable String modelId){
+        return getModelById(modelId);
+    }
+
+
 }

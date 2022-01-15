@@ -38,7 +38,7 @@ public class CountryController {
     public ModelAndView addCountry(@ModelAttribute ("country") Country country){
         try{
             countryDAO.addCountry(country);
-            return searchCountry(country.getCountryId());
+            return getCountryById(country.getCountryId());
         }
         catch (DataIntegrityViolationException e){
             return getAllCountries();
@@ -71,7 +71,7 @@ public class CountryController {
             return getAllCountries();
         }
         catch (DataIntegrityViolationException e){
-            return null;
+            return getCountryById(countryId);
             //cannot delete country, linked with city
         }
     }
@@ -96,6 +96,11 @@ public class CountryController {
             return null;
         }
     }
+    @PostMapping(path = "/admin/countries/{countryId}/edit", params = "action=cancel")
+    public ModelAndView cancelEdit(@PathVariable String countryId){
+        return getCountryById(countryId);
+    }
+
 
 
 }

@@ -27,10 +27,11 @@ public class TemplateController {
         return "admin-countries-add";
     }
 
-//    @GetMapping("admin/countries/{countryId}/edit")
-//    public String getEditCountry(Model model){
-//        Country country = new Country();
-//        model.addAttribute(country);
-//        return "admin-country-edit";
-//    }
+    @GetMapping("admin/companies/add")
+    public String getAddCompanyAddView(Model model){
+        Company company = new Company();
+        model.addAttribute(company);
+        return "admin-companies-add";
+    }
+
 }
