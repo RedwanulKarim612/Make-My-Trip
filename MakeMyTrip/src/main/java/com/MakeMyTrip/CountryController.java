@@ -38,17 +38,17 @@ public class CountryController {
     public ModelAndView addCountry(@ModelAttribute ("country") Country country){
         try{
             countryDAO.addCountry(country);
-            return getCountryById(country.getCountryId());
+            return new ModelAndView("redirect:/admin/countries/" + country.getCountryId());
         }
         catch (DataIntegrityViolationException e){
-            return getAllCountries();
+            return new ModelAndView("redirect:/admin/countries");
             //duplicate primary key
         }
     }
 
     @PostMapping(path = "/admin/countries/add", params = "action=cancel")
     public ModelAndView cancelAdd(){
-        return getAllCountries();
+        return new ModelAndView("redirect:/admin/countries");
     }
 
 
@@ -68,10 +68,10 @@ public class CountryController {
     public ModelAndView deleteCountry(@PathVariable String countryId){
         try{
             countryDAO.deleteCountry(countryId);
-            return getAllCountries();
+            return new ModelAndView("redirect:/admin/countries");
         }
         catch (DataIntegrityViolationException e){
-            return getCountryById(countryId);
+            return new ModelAndView("redirect:/admin/countries/" + countryId);
             //cannot delete country, linked with city
         }
     }
@@ -88,17 +88,16 @@ public class CountryController {
     public ModelAndView editCountry(@PathVariable String countryId,Country country){
         try{
             countryDAO.editCountry(countryId, country);
-            ModelAndView modelAndView = new ModelAndView("admin-country-edit");
-            return getCountryById(countryId);
+            return new ModelAndView("redirect:/admin/countries/" + countryId);
         }
         catch (DataIntegrityViolationException e){
             //cannot edit primary key
-            return null;
+            return new ModelAndView("redirect:/admin/countries/" + countryId);
         }
     }
     @PostMapping(path = "/admin/countries/{countryId}/edit", params = "action=cancel")
     public ModelAndView cancelEdit(@PathVariable String countryId){
-        return getCountryById(countryId);
+        return new ModelAndView("redirect:/admin/countries/" + countryId);
     }
 
 

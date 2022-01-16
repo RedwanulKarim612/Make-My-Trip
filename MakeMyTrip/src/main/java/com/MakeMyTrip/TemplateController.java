@@ -34,4 +34,11 @@ public class TemplateController {
         return "admin-companies-add";
     }
 
+    @GetMapping("admin/transactions/add")
+    public String getAddTransactionView(Model model){
+        Transaction transaction = new Transaction();
+        model.addAttribute(transaction);
+        return "admin-transactions-add";
+    }
+
 }

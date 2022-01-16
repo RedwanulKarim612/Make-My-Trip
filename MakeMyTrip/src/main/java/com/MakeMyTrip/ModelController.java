@@ -49,14 +49,14 @@ public class ModelController {
 //        System.out.println(model.getModelId());
         try{
             modelDAO.addModel(model);
-            return getModelById(model.getModelId());
+            return new ModelAndView("redirect:/admin/models/" + model.getModelId());
         } catch (DataIntegrityViolationException e){
-            return getAllModels();
+            return new ModelAndView("redirect:/admin/models");
         }
     }
     @PostMapping(path = "/admin/models/add",params = "action=cancel")
     public ModelAndView cancelAdd(){
-        return getAllModels();
+        return new ModelAndView("redirect:/admin/models");
     }
 
 
@@ -78,10 +78,10 @@ public class ModelController {
     public ModelAndView deleteModel(@PathVariable String modelId){
         try{
             modelDAO.deleteModel(modelId);
-            return getAllModels();
+            return new ModelAndView("redirect:/admin/models");
         }
         catch (DataIntegrityViolationException e){
-            return getModelById(modelId);
+            return new ModelAndView("redirect:/admin/models/" + modelId);
         }
     }
 
@@ -97,18 +97,18 @@ public class ModelController {
     public ModelAndView editModel(@PathVariable String modelId, Model model){
         try{
             modelDAO.editModel(modelId, model);
-            ModelAndView modelAndView = new ModelAndView("admin-model-edit");
-            return getModelById(modelId);
+            return new ModelAndView("redirect:/admin/models/" + modelId);
         }
         catch (DataIntegrityViolationException e){
             //cannot edit primary key
-            return null;
+            return new ModelAndView("redirect:/admin/models/" + modelId);
         }
     }
     @PostMapping(path = "/admin/models/{modelId}/edit", params = "action=cancel")
     public ModelAndView cancelEdit(@PathVariable String modelId){
-        return getModelById(modelId);
+        return new ModelAndView("redirect:/admin/models/" + modelId);
     }
+
 
 
 }

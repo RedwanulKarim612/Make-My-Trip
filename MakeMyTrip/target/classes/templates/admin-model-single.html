@@ -33,13 +33,13 @@
 
 <div class="main-div" >
     <div>
-        <h3> Country Information </h3>
+        <h3> Model Information </h3>
     </div>
     <div class="info-div">
         <h5> <b>Model Id :</b>  <span th:text="${model.modelId}"></span> </h5>
-        <h5> <b>type :</b>  <span th:text="${model.type}"></span> </h5>
+        <h5> <b>Type :</b>  <span th:text="${model.type}"></span> </h5>
         <h5> <b>Seats in Business Class :</b>  <span th:text="${model.businessSeats}"></span> </h5>
-        <h5> <b>Seats in Economic Class :</b>  <span th:text="${model.economicSeats}"></span> </h5>
+        <h5> <b>Seats in Economy Class :</b>  <span th:text="${model.economicSeats}"></span> </h5>
     </div>
 
     <div style="display: flex">
@@ -52,6 +52,9 @@
                 <button type="submit" name="action" value = "delete" class="btn btn-lg btn-danger" >Delete</button>
             </div>
         </form>
+        <a href="/admin/models/">
+            <button  value = "back" class="btn btn-lg btn-secondary" style="margin-left: 1em" >Back</button>
+        </a>
     </div>
 
 </div>
