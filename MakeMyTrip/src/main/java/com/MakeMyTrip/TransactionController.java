@@ -23,6 +23,8 @@ public class TransactionController {
     public ModelAndView getTransactionById(@PathVariable String transactionId){
         ModelAndView modelAndView = new ModelAndView("admin-transaction-single");
         try{
+            Transaction a = transactionDAO.getTransactionById(transactionId);
+            System.out.println(a.getUserId());
             modelAndView.addObject("transaction",transactionDAO.getTransactionById(transactionId));
             return modelAndView;
         }

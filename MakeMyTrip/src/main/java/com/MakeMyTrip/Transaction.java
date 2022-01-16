@@ -7,6 +7,7 @@ public class Transaction {
     private String userId;
     private String name;
 
+    private double balance;
     public double getBalance() {
         return balance;
     }
@@ -15,17 +16,17 @@ public class Transaction {
         this.balance = balance;
     }
 
-    private double balance;
 
     public Transaction() {
     }
 
-    public Transaction(String transactionId, double amount, String walletId, String userId, String name) {
+    public Transaction(String transactionId, double amount, String walletId, String userId, String name, double balance) {
         this.transactionId = transactionId;
         this.amount = amount;
         this.walletId = walletId;
         this.userId = userId;
         this.name = name;
+        this.balance = balance;
     }
 
     public String getTransactionId() {
