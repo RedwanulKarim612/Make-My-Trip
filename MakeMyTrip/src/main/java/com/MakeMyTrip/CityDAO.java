@@ -30,7 +30,7 @@ public class CityDAO extends JdbcDaoSupport {
     }
 
     public List<Map<String, Object>> getAllCitiesWithCountry() throws EmptyResultDataAccessException{
-        String sql = "SELECT CT.CITY_ID , CT.CITY_NAME, CN.COUNTRY_ID, CN.COUNTRY_NAME, CT.LOCAL_TIME\n" +
+        String sql = "SELECT CT.CITY_ID , CT.CITY_NAME, CN.COUNTRY_ID, CN.COUNTRY_NAME, CT.TIMEZONE\n" +
                 "FROM CITY CT \n" +
                 "JOIN COUNTRY CN\n" +
                 "ON(CT.COUNTRY_ID = CN.COUNTRY_ID)";
@@ -38,8 +38,8 @@ public class CityDAO extends JdbcDaoSupport {
         return getJdbcTemplate().queryForList(sql);
     }
 
-    public List<Map<String, Object>> getCityById(String cityId) throws EmptyResultDataAccessException{
-        String sql = "SELECT CT.CITY_ID , CT.CITY_NAME, CN.COUNTRY_ID, CN.COUNTRY_NAME, CT.LOCAL_TIME\n" +
+    public List<Map<String, Object>> getCityInfoById(String cityId) throws EmptyResultDataAccessException{
+        String sql = "SELECT CT.CITY_ID , CT.CITY_NAME, CN.COUNTRY_ID, CN.COUNTRY_NAME, CT.TIMEZONE\n" +
                 "FROM CITY CT \n" +
                 "JOIN COUNTRY CN\n" +
                 "ON(CT.COUNTRY_ID = CN.COUNTRY_ID) " +
@@ -54,17 +54,20 @@ public class CityDAO extends JdbcDaoSupport {
 
     public void addCity(City city) throws DataIntegrityViolationException {
         String sql = "INSERT INTO city VALUES(?,?,?,?)";
-        getJdbcTemplate().update(sql,city.getCityId(),city.getCityName(),city.getTimeZone(),city.getCountryId());
+        getJdbcTemplate().update(sql,city.getCityId(),city.getCityName(),city.getTimezone(),city.getCountryId());
     }
 
     public void editCity(String cityId,City city) throws DataIntegrityViolationException{
-        if(!cityId.equals(city.getCityId())) throw new DataIntegrityViolationException("cannot edit cityId");
-        String sql = "UPDATE city " +
-                "SET city_id = ?," +
+        if(!cityId.equals(city.getCityId())) {
+            throw new DataIntegrityViolationException("cannot edit cityId");
+        }
+        String sql = "UPDATE city SET " +
+                "city_id = ?," +
                 "city_name = ?," +
-                "local_time = ?," +
-                "country_id = ?";
-        getJdbcTemplate().update(sql,city.getCityId(),city.getCityName(),city.getTimeZone(),city.getCountryId());
+                "TIMEZONE = ?," +
+                "country_id = ? " +
+                "WHERE city_id = ?";
+        getJdbcTemplate().update(sql,city.getCityId(),city.getCityName(),city.getTimezone(),city.getCountryId(),cityId);
     }
 
     public void deleteCity(String cityId) throws DataIntegrityViolationException{
@@ -73,4 +76,8 @@ public class CityDAO extends JdbcDaoSupport {
     }
 
 
+    public City getCityById(String cityId) {
+        String sql = "SELECT * FROM CITY WHERE CITY_ID = ?";
+        return getJdbcTemplate().queryForObject(sql,BeanPropertyRowMapper.newInstance(City.class),cityId);
+    }
 }

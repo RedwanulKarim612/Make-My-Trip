@@ -68,12 +68,12 @@ public class CountryController {
     public ModelAndView deleteCountry(@PathVariable String countryId){
         try{
             countryDAO.deleteCountry(countryId);
-            return new ModelAndView("redirect:/admin/countries");
+
         }
         catch (DataIntegrityViolationException e){
-            return new ModelAndView("redirect:/admin/countries/" + countryId);
             //cannot delete country, linked with city
         }
+        return new ModelAndView("redirect:admin/countries");
     }
 
     @RequestMapping("/admin/countries/{countryId}/edit")
@@ -88,16 +88,17 @@ public class CountryController {
     public ModelAndView editCountry(@PathVariable String countryId,Country country){
         try{
             countryDAO.editCountry(countryId, country);
-            return new ModelAndView("redirect:/admin/countries/" + countryId);
+            ModelAndView modelAndView = new ModelAndView("admin-country-edit");
+            return getCountryById(countryId);
         }
         catch (DataIntegrityViolationException e){
             //cannot edit primary key
-            return new ModelAndView("redirect:/admin/countries/" + countryId);
+            return null;
         }
     }
     @PostMapping(path = "/admin/countries/{countryId}/edit", params = "action=cancel")
     public ModelAndView cancelEdit(@PathVariable String countryId){
-        return new ModelAndView("redirect:/admin/countries/" + countryId);
+        return new ModelAndView("redirect:admin/countries/" + countryId);
     }
 
 

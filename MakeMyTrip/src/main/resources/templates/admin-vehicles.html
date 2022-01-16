@@ -43,13 +43,13 @@
         <!--        edit-->
         <form th:action="@{/admin/vehicles}" method="post" >
             <div class = "input-group" style="width: 60%; margin: 1em auto 1em auto">
-                <input class = "form-control" type="text" id="vehicleId" name="cityId"  placeholder="Find by Vehicle Id" size="50" >
+                <input class = "form-control" type="text" id="vehicleId" name="vehicleId"  placeholder="Find by Vehicle Id" size="50" >
                 <button type="submit" name="action" value = "search" class="btn btn-info" style="margin-right: .5em">Search</button>
                 <button type="submit" name="action" value = "reset" class="btn btn-info">Reset</button>
             </div>
         </form>
         <!--        edit-->
-        <a class="add-btn" href="/admin/cities/add" > Add New Vehicle</a>
+        <a class="add-btn" href="/admin/vehicles/add" > Add New Vehicle</a>
     </div>
 
     <div >
@@ -78,7 +78,7 @@
                 <!--                <td scope="row" th:text="${city.country.countryName} + ' (' + ${city.country.countryId} + ')'"></td>-->
                 <!--                <td scope="row" th:text="${city.timeZone}"></td>-->
                 <td>
-                    <a th:href="@{'/admin/countries/' + ${vehicle.get('VEHICLE_ID')}}">view</a>
+                    <a th:href="@{'/admin/vehicles/' + ${vehicle.get('VEHICLE_ID')}}">view</a>
                 </td>
             </tr>
             </tbody>

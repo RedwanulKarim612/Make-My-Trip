@@ -3,13 +3,13 @@ package com.MakeMyTrip;
 public class City {
     private String cityId;
     private String cityName;
-    private double timeZone;
+    private double timezone;
     private String countryId;
 
-    public City(String cityId, String cityName, double timeZone, String countryId) {
+    public City(String cityId, String cityName, double timezone, String countryId) {
         this.cityId = cityId;
         this.cityName = cityName;
-        this.timeZone = timeZone;
+        this.timezone = timezone;
         this.countryId = countryId;
     }
 
@@ -33,12 +33,12 @@ public class City {
         this.cityName = cityName;
     }
 
-    public double getTimeZone() {
-        return timeZone;
+    public double getTimezone() {
+        return timezone;
     }
 
-    public void setTimeZone(double timeZone) {
-        this.timeZone = timeZone;
+    public void setTimezone(double timezone) {
+        this.timezone = timezone;
     }
 
     public String getCountryId() {
@@ -54,7 +54,7 @@ public class City {
         return "City{" +
                 "cityId='" + cityId + '\'' +
                 ", cityName='" + cityName + '\'' +
-                ", timeZone=" + timeZone +
+                ", timeZone=" + timezone +
                 ", countryId='" + countryId + '\'' +
                 '}';
     }

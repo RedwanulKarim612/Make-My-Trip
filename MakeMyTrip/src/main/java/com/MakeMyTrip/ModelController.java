@@ -49,14 +49,14 @@ public class ModelController {
 //        System.out.println(model.getModelId());
         try{
             modelDAO.addModel(model);
-            return new ModelAndView("redirect:/admin/models/" + model.getModelId());
+            return getModelById(model.getModelId());
         } catch (DataIntegrityViolationException e){
-            return new ModelAndView("redirect:/admin/models");
+            return getAllModels();
         }
     }
     @PostMapping(path = "/admin/models/add",params = "action=cancel")
     public ModelAndView cancelAdd(){
-        return new ModelAndView("redirect:/admin/models");
+        return getAllModels();
     }
 
 
@@ -78,10 +78,10 @@ public class ModelController {
     public ModelAndView deleteModel(@PathVariable String modelId){
         try{
             modelDAO.deleteModel(modelId);
-            return new ModelAndView("redirect:/admin/models");
+            return getAllModels();
         }
         catch (DataIntegrityViolationException e){
-            return new ModelAndView("redirect:/admin/models/" + modelId);
+            return getModelById(modelId);
         }
     }
 
@@ -97,18 +97,18 @@ public class ModelController {
     public ModelAndView editModel(@PathVariable String modelId, Model model){
         try{
             modelDAO.editModel(modelId, model);
-            return new ModelAndView("redirect:/admin/models/" + modelId);
+            ModelAndView modelAndView = new ModelAndView("admin-model-edit");
+            return getModelById(modelId);
         }
         catch (DataIntegrityViolationException e){
             //cannot edit primary key
-            return new ModelAndView("redirect:/admin/models/" + modelId);
+            return null;
         }
     }
     @PostMapping(path = "/admin/models/{modelId}/edit", params = "action=cancel")
     public ModelAndView cancelEdit(@PathVariable String modelId){
-        return new ModelAndView("redirect:/admin/models/" + modelId);
+        return new ModelAndView("redirect:/admin/models/" + modelId );
     }
-
 
 
 }

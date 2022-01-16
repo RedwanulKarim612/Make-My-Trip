@@ -34,11 +34,20 @@ public class TemplateController {
         return "admin-companies-add";
     }
 
-    @GetMapping("admin/transactions/add")
-    public String getAddTransactionView(Model model){
-        Transaction transaction = new Transaction();
-        model.addAttribute(transaction);
-        return "admin-transactions-add";
+
+    @GetMapping("admin/vehicles/add")
+    public String getAddVehicleAddView(Model model){
+        Vehicle vehicle = new Vehicle();
+        model.addAttribute(vehicle);
+        return "admin-vehicles-add";
     }
+
+    @GetMapping("admin/cities/add")
+    public String getAddCityAddView(Model model){
+        City city = new City();
+        model.addAttribute(city);
+        return "admin-cities-add";
+    }
+
 
 }
