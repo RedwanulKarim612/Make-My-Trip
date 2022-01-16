@@ -1,0 +1,64 @@
+:root {
+    --primary-color: #066aff;
+}
+
+.main-div {
+    margin: 2em 6em 2em 6em;
+}
+
+.info-div{
+    display: inline-block;
+    margin: 2em 2em 2em 2em;
+}
+
+a {
+    color: #312e2e;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+table{
+    width: 60%;
+    /*padding: 10em 10em 10em 10em;*/
+    align-self: center;
+}
+
+tr th {
+    text-align: center;
+    vertical-align: middle;
+}
+
+tr td {
+    text-align: center;
+    vertical-align: middle;
+    height: 10px;
+    cursor: pointer;
+}
+
+.current{
+    color: dodgerblue;
+}
+
+
+.add-btn{
+    alignment: center;
+    display: block;
+    color: #4a4adc;
+    border: 3px solid #4a4adc;
+    text-decoration: none;
+    text-align: center;
+    padding: .7em .7em .7em .7em;
+    border-radius: .7em;
+    width: fit-content;
+}
+
+a.add-btn:hover{
+    background: #4a4adc;
+    color: white;
+}
+
+

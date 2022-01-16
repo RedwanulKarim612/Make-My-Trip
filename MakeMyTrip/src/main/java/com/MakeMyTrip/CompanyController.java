@@ -1,9 +1,11 @@
 package com.MakeMyTrip;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
@@ -12,30 +14,90 @@ public class CompanyController {
     @Autowired
     CompanyDAO companyDAO;
 
-    @GetMapping(path = "admin/companies")
-    public List<Company> getAllCompanies(){
-        return companyDAO.getAllCompanies();
+    @RequestMapping("/admin/companies")
+    public ModelAndView getAllCompanies(){
+        ModelAndView modelAndView = new ModelAndView("admin-companies");
+        modelAndView.addObject("companies", companyDAO.getAllCompanies());
+        return modelAndView;
     }
 
     @GetMapping(path = "admin/companies/{companyId}")
-    public Company getCompanyById(@PathVariable String companyId){
+    public ModelAndView getCompanyById(@PathVariable String companyId){
         try{
-            return companyDAO.getCompanyById(companyId);
+            ModelAndView modelAndView = new ModelAndView("admin-company-single");
+            modelAndView.addObject("company",companyDAO.getCompanyById(companyId));
+            return modelAndView;
         }
         catch (EmptyResultDataAccessException e){
             return null;
         }
     }
 
-    @PostMapping(path = "admin/companies")
-    public String addCompany(@RequestBody Company company){
+    @PostMapping(path = "admin/companies/add", params = "action=add")
+    public ModelAndView addCompany(@ModelAttribute("company") Company company){
         try{
             companyDAO.addCompany(company);
-            return "success";
+            return getCompanyById(company.getCompanyId());
         }
         catch (DuplicateKeyException e){
-            return "duplicate company id";
+            return getAllCompanies();
         }
     }
+
+
+    @PostMapping(path = "/admin/companies/add", params = "action=cancel")
+    public ModelAndView cancelAdd(){
+        return getAllCompanies();
+    }
+
+
+    @PostMapping(path = "admin/companies", params = "action=search")
+    public ModelAndView searchCompany(@RequestParam String companyId){
+        ModelAndView modelAndView = new ModelAndView("admin-companies");
+        try{
+            modelAndView.addObject("companies", companyDAO.getCompanyById(companyId));
+        }
+        catch (EmptyResultDataAccessException e){
+
+        }
+        return modelAndView;
+    }
+
+    @PostMapping(path = "/admin/companies/{companyId}", params = "action=delete")
+    public ModelAndView deleteCompany(@PathVariable String companyId){
+        try{
+            companyDAO.deleteCompany(companyId);
+            return getAllCompanies();
+        }
+        catch (DataIntegrityViolationException e){
+            return getCompanyById(companyId);
+        }
+    }
+
+    @RequestMapping("/admin/companies/{companyId}/edit")
+    public ModelAndView getEditPage(@PathVariable String companyId){
+        ModelAndView modelAndView = new ModelAndView("admin-company-edit");
+        modelAndView.addObject("company",companyDAO.getCompanyById(companyId));
+        return modelAndView;
+    }
+
+
+    @PostMapping(path = "/admin/companies/{companyId}/edit", params = "action=save")
+    public ModelAndView editCompany(@PathVariable String companyId,Company company){
+        try{
+            companyDAO.editCompany(companyId, company);
+            ModelAndView modelAndView = new ModelAndView("admin-company-edit");
+            return getCompanyById(companyId);
+        }
+        catch (DataIntegrityViolationException e){
+            //cannot edit primary key
+            return null;
+        }
+    }
+    @PostMapping(path = "/admin/companies/{companyId}/edit", params = "action=cancel")
+    public ModelAndView cancelEdit(@PathVariable String companyId){
+        return getCompanyById(companyId);
+    }
+
 
 }

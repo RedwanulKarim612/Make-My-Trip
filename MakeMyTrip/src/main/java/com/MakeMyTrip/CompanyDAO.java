@@ -1,6 +1,7 @@
 package com.MakeMyTrip;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -41,4 +42,18 @@ public class CompanyDAO extends JdbcDaoSupport {
         getJdbcTemplate().update(sql,company.getCompanyId(),company.getCompanyName());
 
     }
+
+    public void deleteCompany(String companyId) throws DataIntegrityViolationException {
+        String sql = "DELETE FROM company WHERE company_id = ?";
+        getJdbcTemplate().update(sql,companyId);
+    }
+    public void editCompany(String companyId,Company company) throws DataIntegrityViolationException{
+        if(!companyId.equals(company.getCompanyId())) throw new DataIntegrityViolationException("cannot edit primary key");
+        String sql = "UPDATE company SET " +
+                "company_id = ?," +
+                "company_name = ?" +
+                "WHERE company_id = ?";
+        getJdbcTemplate().update(sql,company.getCompanyId(),company.getCompanyName(),companyId);
+    }
+
 }

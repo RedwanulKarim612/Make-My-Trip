@@ -6,6 +6,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.text.ParseException;
@@ -16,10 +17,13 @@ public class VehicleController {
     @Autowired
     VehicleDAO vehicleDAO;
 
-    @GetMapping("/admin/vehicles")
-    public List<Vehicle> getAllVehicles(){
+    @RequestMapping("/admin/vehicles")
+    @PostMapping(path = "/admin/vehicles" , params = "action=reset")
+    public ModelAndView getAllVehicles(){
+        ModelAndView modelAndView = new ModelAndView("admin-vehicles");
         try{
-            return vehicleDAO.getAllVehicles();
+            modelAndView.addObject("vehicles", vehicleDAO.getAllVehicles());
+            return modelAndView;
         }
         catch (EmptyResultDataAccessException e){
             return null;
@@ -27,51 +31,77 @@ public class VehicleController {
     }
 
     @GetMapping("/admin/vehicles/{vehicleId}")
-    public Vehicle getVehicleById(@PathVariable String vehicleId){
+    public ModelAndView getVehicleById(@PathVariable String vehicleId){
         try{
-            return vehicleDAO.getVehicleById(vehicleId);
+            ModelAndView modelAndView = new ModelAndView("admin-vehicle-single");
+            modelAndView.addObject("vehicle",vehicleDAO.getVehicleByIdInfo(vehicleId).get(0));
+            return modelAndView;
         }
         catch (EmptyResultDataAccessException e){
             return null;
         }
     }
 
-    @PostMapping("/admin/vehicles")
-    public String addVehicle(@RequestBody Vehicle vehicle){
+    @PostMapping(value = "/admin/vehicles/add", params = "action=add")
+    public ModelAndView addVehicle(@ModelAttribute("vehicle") Vehicle vehicle){
         try {
             vehicleDAO.addVehicle(vehicle);
-            return "success";
-        }
-        catch (DuplicateKeyException e){
-            return "duplicate vehicle id";
-        }
-        catch (DataIntegrityViolationException e) {
-            System.out.println("Invalid modelId or companyId");
-            return "invalid modelId or companyId";
-        }
-        catch (ParseException e){
-            return "invalid date format";
+            return new ModelAndView("redirect:/admin/vehicles/" + vehicle.getVehicleId());
+        } catch (DataIntegrityViolationException | ParseException e){
+            return new ModelAndView("redirect:/admin/vehicles");
         }
     }
 
-    @DeleteMapping("/admin/vehicles/{vehicleId}")
-    public String deleteVehicle(@PathVariable String vehicleId){
+    @PostMapping(value = "admin/vehicles/add", params = "action=cancel")
+    public ModelAndView cancelAdd(){
+        return new ModelAndView("redirect:/admin/vehicles");
+    }
+
+    @PostMapping(path = "admin/vehicles", params = "action=search")
+    public ModelAndView searchVehicle(@RequestParam String vehicleId){
+        ModelAndView modelAndView = new ModelAndView("admin-vehicles");
+        try{
+            modelAndView.addObject("vehicles", vehicleDAO.getVehicleByIdInfo(vehicleId));
+        }
+        catch (EmptyResultDataAccessException e){
+
+        }
+        return modelAndView;
+    }
+
+
+    @PostMapping(value = "/admin/vehicles/{vehicleId}" , params = "action=delete")
+    public ModelAndView deleteVehicle(@PathVariable String vehicleId){
         try{
             vehicleDAO.deleteVehicle(vehicleId);
-            return "success";
         }
         catch (DataIntegrityViolationException e){
-            return "cannot delete vehicle";
         }
+
+        return new ModelAndView("redirect:/admin/vehicles");
     }
 
-    @PutMapping("/admin/vehicles/{vehicleId}")
-    public void editVehicle(@PathVariable String vehicleId, Vehicle vehicle){
+    @RequestMapping("/admin/vehicles/{vehicleId}/edit")
+    public ModelAndView getEditPage(@PathVariable String vehicleId){
+        ModelAndView modelAndView = new ModelAndView("admin-vehicle-edit");
+        modelAndView.addObject("vehicle",vehicleDAO.getVehicleById(vehicleId));
+        return modelAndView;
+    }
+
+    @PostMapping(path = "/admin/vehicles/{vehicleId}/edit", params = "action=save")
+    public ModelAndView editVehicle(@PathVariable String vehicleId,Vehicle vehicle){
         try{
             vehicleDAO.editVehicle(vehicleId, vehicle);
         }
         catch (DataIntegrityViolationException e){
             //cannot edit primary key
         }
+        return new ModelAndView("redirect:/admin/vehicles/" + vehicleId);
     }
+    @PostMapping(path = "/admin/vehicles/{vehicleId}/edit", params = "action=cancel")
+    public ModelAndView cancelEdit(@PathVariable String vehicleId){
+        return new ModelAndView("redirect:/admin/vehicles/" + vehicleId );
+    }
+
+
 }

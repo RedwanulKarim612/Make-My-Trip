@@ -1,0 +1,71 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Make My Trip admin</title>
+    <link th:href="@{/styles/admin_main.css}" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link href="https://getbootstrap.com/docs/4.0/examples/signin/signin.css" rel="stylesheet" crossorigin="anonymous">
+</head>
+<body>
+<div class = "nav-bar" style="margin-top: 2%">
+    <div class="container">
+
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a href="#" class="navbar-brand"> Make My Trip</a>
+
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="admin/home">home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/admin/trips">Trips</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/admin/vehicles">Vehicles</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/admin/models">Models</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/admin/companies">Companies</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/admin/cities">Cities</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/admin/countries">Countries</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/admin/transactions">Transactions</a></li>
+                </ul>
+            </div>
+        </nav>
+
+
+    </div>
+</div>
+
+<div class="main-div">
+    <div style="margin-left: 6em">
+        <h3>Add New Model</h3>
+    </div>
+    <div style="vertical-align: center">
+        <form th:action="@{/admin/models/add}" method="post" th:object="${model}" >
+            <div class = "form-inline" style="width: 60%; margin: 1em auto 1em auto">
+                <div class="form-group mb-3">
+                    <label class="form-label" for="modelId"> Model Id: </label>
+                    <input class = "form-control" type="text" id="modelId" th:field="*{modelId}"  size="50" >
+                </div>
+                <div class="form-group mb-3">
+                    <label class="form-label" for="type"> Type: </label>
+                    <input class = "form-control" type="text" id="type" th:field="*{type}" size="50" >
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class="form-label" for="businessSeats"> Number of Business Class Seats: </label>
+                    <input class = "form-control" type="text" id="businessSeats" th:field="*{businessSeats}" size="50" >
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class="form-label" for="economicSeats"> Number of Economy Seats: </label>
+                    <input class = "form-control" type="text" id="economicSeats" th:field="*{economicSeats}" size="50" >
+                </div>
+                <div class="form-group align-bottom" style="margin-top: 2em; display: flex">
+                    <button type="submit" name="action" value = "add" class="btn btn-lg btn-primary" style="margin-right: .5em; width: 50%">Add</button>
+                    <button type="submit" name="action" value = "cancel" class="btn btn-lg btn-secondary" style="margin-right: .5em; width: 50%">Cancel</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

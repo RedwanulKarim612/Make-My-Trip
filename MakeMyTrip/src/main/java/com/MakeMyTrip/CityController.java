@@ -3,7 +3,6 @@ package com.MakeMyTrip;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -12,11 +11,13 @@ public class CityController {
     @Autowired
     CityDAO cityDAO;
 
-    @GetMapping(path = "admin/cities")
+    @RequestMapping("admin/cities")
+    @PostMapping(path = "admin/cities" , params = "action=reset")
+
     public ModelAndView getAllCities(){
-        ModelAndView modelAndView = new ModelAndView();
+        ModelAndView modelAndView = new ModelAndView("admin-cities");
         try{
-            modelAndView.addObject("cities", cityDAO.getAllCities());
+            modelAndView.addObject("cities", cityDAO.getAllCitiesWithCountry());
         }
         catch (EmptyResultDataAccessException e){
             //
@@ -27,9 +28,9 @@ public class CityController {
 
     @GetMapping(path = "admin/cities/{cityId}")
     public ModelAndView getCityById(@PathVariable String cityId){
-        ModelAndView modelAndView = new ModelAndView();
+        ModelAndView modelAndView = new ModelAndView("admin-city-single");
         try{
-            modelAndView.addObject("city", cityDAO.getCityById(cityId));
+            modelAndView.addObject("city", cityDAO.getCityInfoById(cityId).get(0));
         }
         catch (EmptyResultDataAccessException e){
             //
@@ -37,36 +38,64 @@ public class CityController {
         return modelAndView;
     }
 
-    @PostMapping(path = "admin/cities")
-    public String addCity(@RequestBody City city){
+    @PostMapping(path = "admin/cities/add")
+    public ModelAndView addCity(@ModelAttribute("city") City city){
         try{
             cityDAO.addCity(city);
-            return "success";
+            return new ModelAndView("redirect:/admin/cities/" + city.getCityId());
         }
         catch (DataIntegrityViolationException e){
-            return "failed";
+            return new ModelAndView("redirect:/admin/cities");
         }
     }
 
-    @PutMapping(path = "admin/cities/{cityId}")
-    public String editCity(@PathVariable String cityId, @RequestBody City city){
+    @PostMapping(value = "admin/cities/add", params = "action=cancel")
+    public ModelAndView cancelAdd(){
+        return new ModelAndView("redirect:/admin/cities");
+    }
+
+
+    @PostMapping(path = "admin/cities" ,params = "action=search")
+    public ModelAndView searchCity(@RequestParam String cityId){
+        ModelAndView modelAndView = new ModelAndView("admin-cities");
         try{
-            cityDAO.editCity(cityId, city);
-            return "success";
+            modelAndView.addObject("cities",cityDAO.getCityInfoById(cityId));
         }
-        catch (DataIntegrityViolationException e){
-            return "failed";
+        catch (EmptyResultDataAccessException e){
+            //no model;
         }
+        return modelAndView;
     }
-
-    @DeleteMapping(path = "admin/cities/{cityId}")
-    public String deleteCity(@PathVariable String cityId){
+    @PostMapping(value = "/admin/cities/{cityId}" , params = "action=delete")
+    public ModelAndView deleteCity(@PathVariable String cityId){
         try{
             cityDAO.deleteCity(cityId);
-            return "success";
         }
         catch (DataIntegrityViolationException e){
-            return "failed";
         }
+
+        return new ModelAndView("redirect:/admin/cities");
+    }
+
+    @RequestMapping("/admin/cities/{cityId}/edit")
+    public ModelAndView getEditPage(@PathVariable String cityId){
+        ModelAndView modelAndView = new ModelAndView("admin-city-edit");
+        modelAndView.addObject("city",cityDAO.getCityById(cityId));
+        return modelAndView;
+    }
+
+    @PostMapping(path = "/admin/cities/{cityId}/edit", params = "action=save")
+    public ModelAndView editCity(@PathVariable String cityId,City city){
+        try{
+            cityDAO.editCity(cityId, city);
+        }
+        catch (DataIntegrityViolationException e){
+            //cannot edit primary key
+        }
+        return new ModelAndView("redirect:/admin/cities/" + cityId);
+    }
+    @PostMapping(path = "/admin/cities/{cityId}/edit", params = "action=cancel")
+    public ModelAndView cancelEdit(@PathVariable String cityId){
+        return new ModelAndView("redirect:/admin/cities/" + cityId );
     }
 }

@@ -28,7 +28,7 @@ public class CountryDAO extends JdbcDaoSupport {
     }
 
     public Country getCountryById(String countryId) throws EmptyResultDataAccessException{
-        String sql = "SELECT * FROM country WHERE country_id = ?";
+        String sql = "SELECT * FROM country WHERE UPPER(country_id) = UPPER(?)";
         return getJdbcTemplate().queryForObject(sql,BeanPropertyRowMapper.newInstance(Country.class),countryId);
     }
 
