@@ -39,8 +39,9 @@ public class TransactionDAO extends JdbcDaoSupport {
         sql = "SELECT balance FROM WALLET WHERE WALLET_ID = ?";
         Double d = getJdbcTemplate().queryForObject(sql, Double.class, transaction.getWalletId());
         sql = "UPDATE WALLET " +
-                "SET balance = ?";
+                "SET balance = ? " +
+                "WHERE wallet_id = ?";
 
-        getJdbcTemplate().update(sql, d + transaction.getAmount());
+        getJdbcTemplate().update(sql, d + transaction.getAmount(), transaction.getWalletId());
     }
 }
