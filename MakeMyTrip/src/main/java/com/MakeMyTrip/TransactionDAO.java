@@ -21,27 +21,20 @@ public class TransactionDAO extends JdbcDaoSupport {
     public void initialize(){setDataSource(dataSource);}
 
     public List<Transaction> getAllTransaction()  throws EmptyResultDataAccessException {
-        String sql = "SELECT transaction_Id, amount, wallet_Id, user_Id, name, balance " +
-                "FROM TRANSACTION JOIN WALLET USING (wallet_Id) JOIN CUSTOMER USING (USER_ID)";
+        String sql = "SELECT * " +
+                "FROM TRANSACTION";
         return getJdbcTemplate().query(sql, BeanPropertyRowMapper.newInstance(Transaction.class));
     }
 
 
     public Transaction getTransactionById(String transactionId) throws EmptyResultDataAccessException {
-        String sql = "SELECT transaction_Id, amount, wallet_Id, user_Id, name, balance " +
-                "FROM (SELECT * FROM TRANSACTION WHERE transaction_id = ?) JOIN WALLET USING (wallet_Id) JOIN CUSTOMER USING (USER_ID)";
+        String sql = "SELECT * " +
+                "FROM TRANSACTION WHERE transaction_id = ?";
         return getJdbcTemplate().queryForObject(sql, BeanPropertyRowMapper.newInstance(Transaction.class), transactionId);
     }
 
     public void addTransaction(Transaction transaction) throws DuplicateKeyException {
         String sql = "INSERT INTO TRANSACTION VALUES(?,?,?)";
         getJdbcTemplate().update(sql,transaction.getTransactionId(),transaction.getAmount(), transaction.getWalletId());
-        sql = "SELECT balance FROM WALLET WHERE WALLET_ID = ?";
-        Double d = getJdbcTemplate().queryForObject(sql, Double.class, transaction.getWalletId());
-        sql = "UPDATE WALLET " +
-                "SET balance = ? " +
-                "WHERE WALLET_ID = ?";
-
-        getJdbcTemplate().update(sql, d + transaction.getAmount(), transaction.getWalletId());
     }
 }

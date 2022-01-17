@@ -24,7 +24,6 @@ public class TransactionController {
         ModelAndView modelAndView = new ModelAndView("admin-transaction-single");
         try{
             Transaction a = transactionDAO.getTransactionById(transactionId);
-            System.out.println(a.getUserId());
             modelAndView.addObject("transaction",transactionDAO.getTransactionById(transactionId));
             return modelAndView;
         }
@@ -40,14 +39,14 @@ public class TransactionController {
             return new ModelAndView("redirect:/admin/transactions/" + transaction.getTransactionId());
         }
         catch (DataIntegrityViolationException e){
-            return new ModelAndView("redirect:/admin/transactions");
+            return new ModelAndView("redirect:/admin/transactions/");
             //duplicate primary key
         }
     }
 
     @PostMapping(path = "/admin/transactions/add",params = "action=cancel")
     public ModelAndView cancelAdd(){
-        return new ModelAndView("redirect:/admin/transactions");
+        return new ModelAndView("redirect:/admin/transactions/");
     }
 
     @PostMapping(path = "admin/transactions", params = "action=search")
