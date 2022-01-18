@@ -42,21 +42,9 @@
         <h5> <b>Transaction Id :</b>  <span th:text="${transaction.transactionId}"></span> </h5>
         <h5> <b>Wallet Id :</b>  <span th:text="${transaction.walletId}"></span> </h5>
         <h5> <b>Amount :</b>  <span th:text="${transaction.amount}"></span> </h5>
-        <h5> <b>User ID :</b>  <span th:text="${transaction.userId}"></span> </h5>
-        <h5> <b>User name :</b>  <span th:text="${transaction.name}"></span> </h5>
-        <h5> <b>Current Balance :</b>  <span th:text="${transaction.balance}"></span> </h5>
     </div>
 
     <div style="display: flex">
-<!--        <a th:href="@{'/admin/transactions/' + ${transaction.transactionId} + '/edit'}">-->
-<!--            <button  value = "edit" class="btn btn-lg btn-secondary" style="margin-right: 1em" >Edit</button>-->
-<!--        </a>-->
-<!--        <form th:action="@{'/admin/countries/' + ${country.countryId}}" method="post" >-->
-<!--            <div class="form-group align-bottom" >-->
-
-<!--                <button type="submit" name="action" value = "delete" class="btn btn-lg btn-danger" >Delete</button>-->
-<!--            </div>-->
-<!--        </form>-->
         <a href="/admin/transactions/">
             <button  value = "back" class="btn btn-lg btn-secondary" style="margin-left: 1em" >Back</button>
         </a>

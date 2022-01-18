@@ -45,7 +45,6 @@ public class CityDAO extends JdbcDaoSupport {
                 "ON(CT.COUNTRY_ID = CN.COUNTRY_ID) " +
                 "WHERE CT.CITY_ID = ?";
         Map<String, Object> mp =  getJdbcTemplate().queryForMap(sql,cityId);
-        System.out.println(mp.keySet());
         List<Map<String, Object>> l =new ArrayList<>();
         l.add(mp);
         return l;

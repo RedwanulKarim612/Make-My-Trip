@@ -37,17 +37,17 @@ public class CompanyController {
     public ModelAndView addCompany(@ModelAttribute("company") Company company){
         try{
             companyDAO.addCompany(company);
-            return getCompanyById(company.getCompanyId());
+            return new ModelAndView("redirect:/admin/companies/" + company.getCompanyId());
         }
         catch (DuplicateKeyException e){
-            return getAllCompanies();
+            return new ModelAndView("redirect:/admin/companies");
         }
     }
 
 
     @PostMapping(path = "/admin/companies/add", params = "action=cancel")
     public ModelAndView cancelAdd(){
-        return getAllCompanies();
+        return new ModelAndView("redirect:/admin/companies");
     }
 
 
@@ -67,10 +67,10 @@ public class CompanyController {
     public ModelAndView deleteCompany(@PathVariable String companyId){
         try{
             companyDAO.deleteCompany(companyId);
-            return getAllCompanies();
+            return new ModelAndView("redirect:/admin/companies");
         }
         catch (DataIntegrityViolationException e){
-            return getCompanyById(companyId);
+            return new ModelAndView("redirect:/admin/companies/" + companyId);
         }
     }
 
@@ -86,17 +86,16 @@ public class CompanyController {
     public ModelAndView editCompany(@PathVariable String companyId,Company company){
         try{
             companyDAO.editCompany(companyId, company);
-            ModelAndView modelAndView = new ModelAndView("admin-company-edit");
-            return getCompanyById(companyId);
+            return new ModelAndView("redirect:/admin/companies/" + companyId);
         }
         catch (DataIntegrityViolationException e){
             //cannot edit primary key
-            return null;
+            return new ModelAndView("redirect:/admin/companies/" + companyId);
         }
     }
     @PostMapping(path = "/admin/companies/{companyId}/edit", params = "action=cancel")
     public ModelAndView cancelEdit(@PathVariable String companyId){
-        return getCompanyById(companyId);
+        return new ModelAndView("redirect:/admin/companies/" + companyId);
     }
 
 
