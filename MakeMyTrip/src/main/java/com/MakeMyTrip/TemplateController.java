@@ -41,4 +41,19 @@ public class TemplateController {
         return "admin-transactions-add";
     }
 
+    @GetMapping("admin/cities/add")
+    public String getAddCityView(Model model){
+        City city = new City();
+        model.addAttribute(city);
+        return "admin-cities-add";
+    }
+
+
+    @GetMapping("admin/vehicles/add")
+    public String getAddVehicleView(Model model){
+        Vehicle vehicle = new Vehicle();
+        model.addAttribute(vehicle);
+        return "admin-vehicles-add";
+    }
+
 }

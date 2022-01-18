@@ -37,7 +37,7 @@
 <div class="main-div" >
 
     <div>
-        <h3>Companies</h3>
+        <h3>Cities</h3>
     </div>
     <div style="vertical-align: middle">
         <!--        edit-->
@@ -71,11 +71,9 @@
                 <td scope="row" th:text="${city.get('CITY_ID')}"></td>
                 <td scope="row" th:text="${city.get('CITY_NAME')}"></td>
                 <td scope="row" th:text="${city.get('COUNTRY_NAME')} + ' (' + ${city.get('COUNTRY_ID')} + ')'"></td>
-                <td scope="row" th:text="${city.get('LOCAL_TIME')}"></td>
-<!--                <td scope="row" th:text="${city.country.countryName} + ' (' + ${city.country.countryId} + ')'"></td>-->
-<!--                <td scope="row" th:text="${city.timeZone}"></td>-->
+                <td scope="row" th:text="${city.get('TIMEZONE')}"></td>
                 <td>
-                    <a th:href="@{'/admin/countries/' + ${city.get('CITY_ID')}}">view</a>
+                    <a th:href="@{'/admin/cities/' + ${city.get('CITY_ID')}}">view</a>
                 </td>
             </tr>
             </tbody>
