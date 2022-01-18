@@ -35,50 +35,37 @@
 </div>
 
 <div class="main-div" >
-
     <div>
-        <h3>Cities</h3>
+        <h3> Edit Vehicle Information </h3>
     </div>
-    <div style="vertical-align: middle">
-        <!--        edit-->
-        <form th:action="@{/admin/cities}" method="post" >
-            <div class = "input-group" style="width: 60%; margin: 1em auto 1em auto">
-                <input class = "form-control" type="text" id="cityId" name="cityId"  placeholder="Find by City Id" size="50" >
-                <button type="submit" name="action" value = "search" class="btn btn-info" style="margin-right: .5em">Search</button>
-                <button type="submit" name="action" value = "reset" class="btn btn-info">Reset</button>
+
+    <div style="display: flex">
+        <form th:action="@{'/admin/vehicles/' + ${vehicleId} + '/edit'}" method="post" th:object="${vehicle}" >
+            <div class = "form-inline" style="width: 60%; margin: 1em auto 1em auto">
+                <div class="form-group mb-3">
+                    <label class="form-label" for="vehicleId"> Vehicle Id: </label>
+                    <input class = "form-control" type="text" id="vehicleId" th:field="*{vehicleId}"  size="50" disabled>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="registrationNo"> Reg no: </label>
+                    <input class = "form-control" type="text" id="registrationNo" th:field="*{registrationNo}" size="50" >
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="modelId"> Model: </label>
+                    <input class = "form-control" type="text" id="modelId" th:field="*{modelId}" size="50" >
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="companyId"> Company: </label>
+                    <input class = "form-control" type="text" id="companyId" th:field="*{companyId}" size="50" >
+                </div>
+                <div class="form-group align-bottom" style="margin-top: 2em; display: flex">
+                    <button type="submit" name="action" value = "save" class="btn btn-lg btn-primary" style="margin-right: .5em; width: 50%">Save</button>
+                    <button type="submit" name="action" value = "cancel" class="btn btn-lg btn-secondary" style="margin-right: .5em; width: 50%">Cancel</button>
+                </div>
             </div>
         </form>
-        <!--        edit-->
-        <a class="add-btn" href="/admin/cities/add" > Add New City</a>
     </div>
 
-    <div >
-        <table class="table table-dark table-striped sortable" style="width: 80%; margin: 1em auto 1em auto">
-
-            <thead style="text-align: center; vertical-align: middle">
-            <!--            edit-->
-            <tr >
-                <th scope="col" th:width="18"><b> ID </b></th>
-                <th scope="col" th:width="29"><b> Name </b> </th>
-                <th scope="col" th:width="29"><b> Country </b> </th>
-                <th scope="col" th:width="10"><b> Timezone(GMT) </b> </th>
-                <th scope="col" th:width="7"> </th>
-            </tr>
-            </thead>
-            <tbody>
-            <!--            edit-->
-            <tr th:each="city : ${cities}" >
-                <td scope="row" th:text="${city.get('CITY_ID')}"></td>
-                <td scope="row" th:text="${city.get('CITY_NAME')}"></td>
-                <td scope="row" th:text="${city.get('COUNTRY_NAME')} + ' (' + ${city.get('COUNTRY_ID')} + ')'"></td>
-                <td scope="row" th:text="${city.get('TIMEZONE')}"></td>
-                <td>
-                    <a th:href="@{'/admin/cities/' + ${city.get('CITY_ID')}}">view</a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
 </div>
 
 </body>

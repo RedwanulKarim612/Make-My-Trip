@@ -35,50 +35,29 @@
 </div>
 
 <div class="main-div" >
-
     <div>
-        <h3>Cities</h3>
+        <h3> City Information </h3>
     </div>
-    <div style="vertical-align: middle">
-        <!--        edit-->
-        <form th:action="@{/admin/cities}" method="post" >
-            <div class = "input-group" style="width: 60%; margin: 1em auto 1em auto">
-                <input class = "form-control" type="text" id="cityId" name="cityId"  placeholder="Find by City Id" size="50" >
-                <button type="submit" name="action" value = "search" class="btn btn-info" style="margin-right: .5em">Search</button>
-                <button type="submit" name="action" value = "reset" class="btn btn-info">Reset</button>
+    <div class="info-div">
+        <h5> <b>City Id :</b>  <span th:text="${city.get('CITY_ID')}"></span> </h5>
+        <h5> <b>City Name :</b>  <span th:text="${city.get('CITY_NAME')}"></span> </h5>
+        <h5> <b>Country :</b>  <span th:text="${city.get('COUNTRY_NAME')} + ' (' + ${city.get('COUNTRY_ID')} + ')'"></span> </h5>
+        <h5> <b>Timezone(GMT) :</b>  <span th:text="${city.get('TIMEZONE')}"></span> </h5>
+
+    </div>
+
+    <div style="display: flex">
+        <a th:href="@{'/admin/cities/' + ${city.get('CITY_ID')} + '/edit'}">
+            <button  value = "edit" class="btn btn-lg btn-secondary" style="margin-right: 1em" >Edit</button>
+        </a>
+        <form th:action="@{'/admin/cities/' + ${city.get('CITY_ID')}}" method="post" >
+            <div class="form-group align-bottom" >
+
+                <button type="submit" name="action" value = "delete" class="btn btn-lg btn-danger" >Delete</button>
             </div>
         </form>
-        <!--        edit-->
-        <a class="add-btn" href="/admin/cities/add" > Add New City</a>
     </div>
 
-    <div >
-        <table class="table table-dark table-striped sortable" style="width: 80%; margin: 1em auto 1em auto">
-
-            <thead style="text-align: center; vertical-align: middle">
-            <!--            edit-->
-            <tr >
-                <th scope="col" th:width="18"><b> ID </b></th>
-                <th scope="col" th:width="29"><b> Name </b> </th>
-                <th scope="col" th:width="29"><b> Country </b> </th>
-                <th scope="col" th:width="10"><b> Timezone(GMT) </b> </th>
-                <th scope="col" th:width="7"> </th>
-            </tr>
-            </thead>
-            <tbody>
-            <!--            edit-->
-            <tr th:each="city : ${cities}" >
-                <td scope="row" th:text="${city.get('CITY_ID')}"></td>
-                <td scope="row" th:text="${city.get('CITY_NAME')}"></td>
-                <td scope="row" th:text="${city.get('COUNTRY_NAME')} + ' (' + ${city.get('COUNTRY_ID')} + ')'"></td>
-                <td scope="row" th:text="${city.get('TIMEZONE')}"></td>
-                <td>
-                    <a th:href="@{'/admin/cities/' + ${city.get('CITY_ID')}}">view</a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
 </div>
 
 </body>
