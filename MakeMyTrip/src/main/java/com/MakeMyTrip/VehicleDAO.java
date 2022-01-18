@@ -13,6 +13,7 @@ import javax.sql.DataSource;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -65,13 +66,27 @@ public class VehicleDAO extends JdbcDaoSupport {
         return getJdbcTemplate().queryForObject(sql, BeanPropertyRowMapper.newInstance(Vehicle.class), vehicleId );
     }
 
+    public List<Map<String,Object>> getVehicleByIdInfo(String vehicleId) throws EmptyResultDataAccessException{
+        String sql = "SELECT V.VEHICLE_ID , V.REGISTRATION_NO, V.DATE_ADDED, V.MODEL_ID, V.COMPANY_ID , C.COMPANY_NAME\n" +
+                "FROM VEHICLE V \n" +
+                "JOIN COMPANY C\n" +
+                "ON(V.COMPANY_ID = C.COMPANY_ID)\n" +
+                "WHERE VEHICLE_ID = ?";
+        Map<String,Object> mp = getJdbcTemplate().queryForMap(sql,vehicleId);
+        List<Map<String,Object>> list = new ArrayList<>();
+        list.add(mp);
+        return list;
+    }
+
     public void deleteVehicle(String vehicleId) throws DataIntegrityViolationException{
         String sql = "DELETE FROM vehicle WHERE vehicle_id = ?";
         getJdbcTemplate().update(sql,vehicleId);
     }
 
     public void editVehicle(String vehicleId,Vehicle vehicle) throws DataIntegrityViolationException{
-        if(!vehicleId.equals(vehicle.getVehicleId())) throw new DataIntegrityViolationException("cannot edit primary key");
+        if(!vehicleId.equals(vehicle.getVehicleId())) {
+            throw new DataIntegrityViolationException("cannot edit primary key");
+        }
         String sql = "UPDATE vehicle SET " +
                 "vehicle_id = ?," +
                 "registration_no = ?," +
