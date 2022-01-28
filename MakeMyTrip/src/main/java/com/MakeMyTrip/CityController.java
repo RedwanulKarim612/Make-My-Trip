@@ -3,6 +3,7 @@ package com.MakeMyTrip;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -13,7 +14,6 @@ public class CityController {
 
     @RequestMapping("admin/cities")
     @PostMapping(path = "admin/cities" , params = "action=reset")
-
     public ModelAndView getAllCities(){
         ModelAndView modelAndView = new ModelAndView("admin-cities");
         try{

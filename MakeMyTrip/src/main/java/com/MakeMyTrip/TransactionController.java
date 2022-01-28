@@ -3,6 +3,7 @@ package com.MakeMyTrip;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -16,6 +17,7 @@ public class TransactionController {
     public ModelAndView getAllTransaction(){
         ModelAndView modelAndView = new ModelAndView("admin-transactions");
         modelAndView.addObject("transactions", transactionDAO.getAllTransaction());
+        System.out.println(SecurityContextHolder.getContext().getAuthentication().getName());
         return modelAndView;
     }
 
