@@ -76,35 +76,22 @@ public class TemplateController {
         return "login";
     }
 
-    @RequestMapping(value = "/login", method = RequestMethod.POST )
-    public @ResponseBody
-    ModelAndView createAuthenticationToken(@ModelAttribute("request") AuthenticationRequest authenticationRequest, HttpServletResponse response) throws Exception{
-        Cookie cookie = new Cookie("jwt", "Bearer" );
-
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-        cookie.setPath("");
-        cookie.setDomain("");
-        try{authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(),
-                        authenticationRequest.getPassword()));
-        }
-        catch (BadCredentialsException e){
-//            System.out.println("bad credential");
-//            throw new BadCredentialsException("incorrect username or password");
-            response.addCookie(cookie);
-            return new ModelAndView("redirect:/login");
-
-        }
-        final UserDetails userDetails = customerUserDetailsService
-                    .loadUserByUsername(authenticationRequest.getUsername());
-        final String jwt = jwtUtil.generateToken(userDetails);
-        cookie.setValue("Bearer" + jwt);
-        
-
-        System.out.println("d");
-        response.addCookie(cookie);
-        return new ModelAndView("redirect:/admin/countries");
+    @GetMapping("/register")
+    public String getRegisterPage(Model model){
+        Customer customer = new Customer();
+        model.addAttribute(customer);
+        return "register";
     }
 
+    @GetMapping("/admin/login")
+    public String getAdminLoginPage(Model model){
+        AuthenticationRequest authenticationRequest = new AuthenticationRequest();
+        model.addAttribute(authenticationRequest);
+        return "admin-login";
+    }
+
+    @GetMapping("/home")
+    public String getHomePage(){
+        return "home";
+    }
 }

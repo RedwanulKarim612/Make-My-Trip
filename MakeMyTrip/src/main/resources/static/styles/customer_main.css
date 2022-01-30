@@ -1,0 +1,11 @@
+div.container{
+    width: 30%;
+    margin: 2em auto 2em auto;
+    align-self: center;
+    padding: 2em 2em 2em 2em;
+    border: black;
+    background: aliceblue;
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+
+}
