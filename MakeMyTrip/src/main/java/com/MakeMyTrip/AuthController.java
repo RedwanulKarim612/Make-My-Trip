@@ -51,7 +51,7 @@ public class AuthController {
         }
         catch (BadCredentialsException e){
             System.out.println("bad credential");
-//            throw new Exception("incorrect username or password");
+            cookie.setMaxAge(0);
             return new ModelAndView("redirect:/admin/login");
 //            response.addCookie(cookie);
         }
@@ -80,17 +80,18 @@ public class AuthController {
         }
         catch (BadCredentialsException e){
             System.out.println("bad credential");
+            cookie.setMaxAge(0);
+            response.addCookie(cookie);
             throw new Exception("incorrect username or password");
-//            response.addCookie(cookie);
         }
         final UserDetails userDetails = customerUserDetailsService
                 .loadUserByUsername(authenticationRequest.getUsername());
         final String jwt = jwtUtil.generateToken(userDetails);
         cookie.setValue("Bearer" + jwt);
 
-        System.out.println(jwtUtil.getUsernameFromToken(jwt));
+//        System.out.println(jwtUtil.getUsernameFromToken(jwt));
 
-        System.out.println("d");
+//        System.out.println("d");
         response.addCookie(cookie);
 //        return new ModelAndView("redirect:/home");
     }
