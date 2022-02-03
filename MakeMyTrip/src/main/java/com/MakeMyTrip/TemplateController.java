@@ -80,6 +80,13 @@ public class TemplateController {
         return "admin-login";
     }
 
+    @GetMapping("/company/login")
+    public String getCompanyLogin(Model model){
+        AuthenticationRequest authenticationRequest = new AuthenticationRequest();
+        model.addAttribute(authenticationRequest);
+        return "company-login";
+    }
+
     @GetMapping("/home")
     public String getHomePage(){
         return "home";

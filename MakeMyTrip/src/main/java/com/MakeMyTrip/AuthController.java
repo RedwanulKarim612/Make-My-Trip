@@ -66,6 +66,33 @@ public class AuthController {
         return new ModelAndView("redirect:/admin/home");
     }
 
+    @RequestMapping(value = "company/login", method = RequestMethod.POST)
+    public @ResponseBody ModelAndView companyLogin(@ModelAttribute("request") AuthenticationRequest authenticationRequest, HttpServletResponse response){
+        Cookie cookie = new Cookie("jwt", "Bearer" );
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("/");
+        cookie.setDomain("");
+        try{authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(),
+                        authenticationRequest.getPassword()));
+        }
+        catch (BadCredentialsException e){
+            System.out.println("bad credential");
+            cookie.setMaxAge(0);
+            return new ModelAndView("redirect:/admin/login");
+//            response.addCookie(cookie);
+        }
+        final UserDetails userDetails = customerUserDetailsService
+                .loadUserByUsername(authenticationRequest.getUsername());
+        final String jwt = jwtUtil.generateToken(userDetails);
+        cookie.setValue("Bearer" + jwt);
+
+//        System.out.println(jwtUtil.getUsernameFromToken(jwt));
+
+        response.addCookie(cookie);
+        return new ModelAndView("redirect:/home");
+    }
 
     public @ResponseBody void createAuthenticationToken(@ModelAttribute("request") AuthenticationRequest authenticationRequest, HttpServletResponse response) throws Exception{
         Cookie cookie = new Cookie("jwt", "Bearer" );
