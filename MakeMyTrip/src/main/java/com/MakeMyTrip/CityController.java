@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -11,6 +12,8 @@ import org.springframework.web.servlet.ModelAndView;
 public class CityController {
     @Autowired
     CityDAO cityDAO;
+    @Autowired
+    CountryDAO countryDAO;
 
     @RequestMapping("admin/cities")
     @PostMapping(path = "admin/cities" , params = "action=reset")
@@ -39,10 +42,10 @@ public class CityController {
     }
 
     @PostMapping(path = "admin/cities/add")
-    public ModelAndView addCity(@ModelAttribute("city") City city){
+    public ModelAndView addCity(City city){
         try{
             cityDAO.addCity(city);
-            return new ModelAndView("redirect:/admin/cities/" + city.getCityId());
+            return new ModelAndView("redirect:/admin/cities" );
         }
         catch (DataIntegrityViolationException e){
             return new ModelAndView("redirect:/admin/cities");
@@ -62,7 +65,7 @@ public class CityController {
             modelAndView.addObject("cities",cityDAO.getCityInfoById(cityId));
         }
         catch (EmptyResultDataAccessException e){
-            //no model;
+            //no city;
         }
         return modelAndView;
     }
@@ -81,6 +84,7 @@ public class CityController {
     public ModelAndView getEditPage(@PathVariable String cityId){
         ModelAndView modelAndView = new ModelAndView("admin-city-edit");
         modelAndView.addObject("city",cityDAO.getCityById(cityId));
+        modelAndView.addObject("countries",countryDAO.getAllCountries());
         return modelAndView;
     }
 
@@ -97,5 +101,12 @@ public class CityController {
     @PostMapping(path = "/admin/cities/{cityId}/edit", params = "action=cancel")
     public ModelAndView cancelEdit(@PathVariable String cityId){
         return new ModelAndView("redirect:/admin/cities/" + cityId );
+    }
+    @GetMapping("admin/cities/add")
+    public ModelAndView getAddCityView(){
+        ModelAndView modelAndView = new ModelAndView("admin-cities-add");
+        modelAndView.addObject("city", new City());
+        modelAndView.addObject("countries",countryDAO.getAllCountries());
+        return modelAndView;
     }
 }

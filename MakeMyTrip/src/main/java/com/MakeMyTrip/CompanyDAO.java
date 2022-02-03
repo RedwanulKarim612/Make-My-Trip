@@ -28,19 +28,18 @@ public class CompanyDAO extends JdbcDaoSupport {
     }
 
     public Company getCompanyById(String companyId) throws EmptyResultDataAccessException {
-        String sql = "SELECT * FROM company WHERE company_id = ?";
+        String sql = "SELECT company_id, company_name FROM company WHERE company_id = ?";
         return  getJdbcTemplate().queryForObject(sql,BeanPropertyRowMapper.newInstance(Company.class),companyId);
     }
 
     public List<Company> getAllCompanies() {
-        String sql = "SELECT * FROM company";
+        String sql = "SELECT company_id, company_name FROM company";
         return getJdbcTemplate().query(sql, BeanPropertyRowMapper.newInstance(Company.class));
     }
 
     public void addCompany(Company company) throws DuplicateKeyException {
-        String sql = "INSERT INTO company VALUES(?,?)";
-        getJdbcTemplate().update(sql,company.getCompanyId(),company.getCompanyName());
-
+        String sql = "INSERT INTO company VALUES(?,?,?)";
+        getJdbcTemplate().update(sql,company.getCompanyId(),company.getCompanyName(),company.getPassword());
     }
 
     public void deleteCompany(String companyId) throws DataIntegrityViolationException {
@@ -56,4 +55,8 @@ public class CompanyDAO extends JdbcDaoSupport {
         getJdbcTemplate().update(sql,company.getCompanyId(),company.getCompanyName(),companyId);
     }
 
+    public Company getCompanyForAuth(String username) {
+        String sql = "SELECT company_id, password FROM company WHERE company_id = ?";
+        return getJdbcTemplate().queryForObject(sql,BeanPropertyRowMapper.newInstance(Company.class),username);
+    }
 }

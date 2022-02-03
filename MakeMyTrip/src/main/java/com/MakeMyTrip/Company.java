@@ -3,10 +3,12 @@ package com.MakeMyTrip;
 public class Company {
     private String companyId;
     private String companyName;
+    private String password;
 
-    public Company(String companyId, String companyName) {
+    public Company(String companyId, String companyName, String password) {
         this.companyId = companyId;
         this.companyName = companyName;
+        this.password = password;
     }
 
     public Company() {
@@ -26,6 +28,14 @@ public class Company {
 
     public void setCompanyName(String companyName) {
         this.companyName = companyName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -16,6 +17,10 @@ import java.util.List;
 public class VehicleController {
     @Autowired
     VehicleDAO vehicleDAO;
+    @Autowired
+    CompanyDAO companyDAO;
+    @Autowired
+    ModelDAO modelDAO;
 
     @RequestMapping("/admin/vehicles")
     @PostMapping(path = "/admin/vehicles" , params = "action=reset")
@@ -43,7 +48,7 @@ public class VehicleController {
     }
 
     @PostMapping(value = "/admin/vehicles/add", params = "action=add")
-    public ModelAndView addVehicle(@ModelAttribute("vehicle") Vehicle vehicle){
+    public ModelAndView addVehicle(Vehicle vehicle){
         try {
             vehicleDAO.addVehicle(vehicle);
             return new ModelAndView("redirect:/admin/vehicles/" + vehicle.getVehicleId());
@@ -85,6 +90,8 @@ public class VehicleController {
     public ModelAndView getEditPage(@PathVariable String vehicleId){
         ModelAndView modelAndView = new ModelAndView("admin-vehicle-edit");
         modelAndView.addObject("vehicle",vehicleDAO.getVehicleById(vehicleId));
+        modelAndView.addObject("companies", companyDAO.getAllCompanies());
+        modelAndView.addObject("models", modelDAO.getAllModels());
         return modelAndView;
     }
 
@@ -103,5 +110,13 @@ public class VehicleController {
         return new ModelAndView("redirect:/admin/vehicles/" + vehicleId );
     }
 
-
+    @GetMapping("admin/vehicles/add")
+    public ModelAndView getAddVehicleView(Model model){
+        Vehicle vehicle = new Vehicle();
+        ModelAndView modelAndView = new ModelAndView("admin-vehicles-add");
+        modelAndView.addObject("vehicle", new Vehicle());
+        modelAndView.addObject("companies", companyDAO.getAllCompanies());
+        modelAndView.addObject("models", modelDAO.getAllModels());
+        return modelAndView;
+    }
 }

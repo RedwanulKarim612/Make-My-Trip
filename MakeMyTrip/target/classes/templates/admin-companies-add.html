@@ -50,6 +50,10 @@
                     <label class="form-label" for="companyName"> Company Name: </label>
                     <input class = "form-control" type="text" id="companyName" th:field="*{companyName}" size="50" >
                 </div>
+                <div class="form-group">
+                    <label class="form-label" for="password"> Password: </label>
+                    <input class = "form-control" type="password" id="password" th:field="*{password}" size="50" >
+                </div>
                 <div class="form-group align-bottom" style="margin-top: 2em; display: flex">
                     <button type="submit" name="action" value = "add" class="btn btn-lg btn-primary" style="margin-right: .5em; width: 50%">Add</button>
                     <button type="submit" name="action" value = "cancel" class="btn btn-lg btn-secondary" style="margin-right: .5em; width: 50%">Cancel</button>

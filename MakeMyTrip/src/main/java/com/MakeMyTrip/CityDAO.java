@@ -52,8 +52,8 @@ public class CityDAO extends JdbcDaoSupport {
 
 
     public void addCity(City city) throws DataIntegrityViolationException {
-        String sql = "INSERT INTO city VALUES(?,?,?,?)";
-        getJdbcTemplate().update(sql,city.getCityId(),city.getCityName(),city.getTimezone(),city.getCountryId());
+        String sql = "INSERT INTO city(city_name,timezone,country_id) VALUES(?,?,?)";
+        getJdbcTemplate().update(sql,city.getCityName(),city.getTimezone(),city.getCountryId());
     }
 
     public void editCity(String cityId,City city) throws DataIntegrityViolationException{

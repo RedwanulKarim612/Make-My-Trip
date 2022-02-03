@@ -63,7 +63,7 @@ public class AuthController {
 //        System.out.println(jwtUtil.getUsernameFromToken(jwt));
 
         response.addCookie(cookie);
-        return new ModelAndView("redirect:/admin/countries");
+        return new ModelAndView("redirect:/admin/home");
     }
 
 

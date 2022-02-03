@@ -33,8 +33,8 @@ public class CountryDAO extends JdbcDaoSupport {
     }
 
     public void addCountry(Country country) throws DuplicateKeyException {
-        String sql = "INSERT INTO country VALUES(?,?)";
-        getJdbcTemplate().update(sql,country.getCountryId(),country.getCountryName());
+        String sql = "INSERT INTO country (country_name) VALUES(?)";
+        getJdbcTemplate().update(sql,country.getCountryName());
     }
 
     public void deleteCountry(String countryId) throws DataIntegrityViolationException {

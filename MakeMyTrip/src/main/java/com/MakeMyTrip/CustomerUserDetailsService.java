@@ -23,6 +23,8 @@ public class CustomerUserDetailsService implements UserDetailsService {
     CustomerDAO customerDAO;
     @Autowired
     AdminDAO adminDAO;
+    @Autowired
+    CompanyDAO companyDAO;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
@@ -32,9 +34,10 @@ public class CustomerUserDetailsService implements UserDetailsService {
                 Customer customer = customerDAO.getCustomerByUsernameForAuth(username);
                 return new User(customer.getUserId(), customer.getPassword(), getAuthority(role));
             }
-//            else if(role.equalsIgnoreCase("company")){
-//
-//            }
+            else if(role.equalsIgnoreCase("company")){
+                Company company = companyDAO.getCompanyForAuth(username);
+                return new User(company.getCompanyId(), company.getPassword(), getAuthority(role));
+            }
             else if(role.equalsIgnoreCase("admin")){
                 Admin admin = adminDAO.getAdminByIdForAuth(username);
                 return new User(admin.getAdminId(), admin.getPassword(), getAuthority(role));

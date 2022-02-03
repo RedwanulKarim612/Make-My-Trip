@@ -53,12 +53,17 @@
 
                 <div class="form-group">
                     <label class="form-label" for="modelId"> Model: </label>
-                    <input class = "form-control" type="text" id="modelId" th:field="*{modelId}" size="50" >
+                    <select class = "form-control" type="text" id="modelId" th:field="*{modelId}">
+                        <option value="0">Select Country</option>
+                        <option th:each="model : ${models}" th:value="${model.modelId}" th:text="${model.modelId}"></option>
+                    </select>
                 </div>
-
                 <div class="form-group">
-                    <label class="form-label" for="companyId"> Company:  </label>
-                    <input class = "form-control" type="text" id="companyId" th:field="*{companyId}" size="50" >
+                    <label class="form-label" for="companyId"> Company: </label>
+                    <select class = "form-control" type="text" id="companyId" th:field="*{companyId}">
+                        <option value="0">Select Country</option>
+                        <option th:each="company : ${companies}" th:value="${company.companyId}" th:text="${company.companyName}"></option>
+                    </select>
                 </div>
                 <div class="form-group align-bottom" style="margin-top: 2em; display: flex">
                     <button type="submit" name="action" value = "add" class="btn btn-lg btn-primary" style="margin-right: .5em; width: 50%">Add</button>

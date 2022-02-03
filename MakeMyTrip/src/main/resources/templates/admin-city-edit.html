@@ -55,8 +55,12 @@
                     <input class = "form-control" type="text" id="timezone" th:field="*{timezone}" size="50" >
                 </div>
                 <div class="form-group">
-                    <label class="form-label" for="countryId"> Country: </label>
-                    <input class = "form-control" type="text" id="countryId" th:field="*{countryId}" size="50" >
+                    <label class="form-label" for="countryId"> Country : </label>
+                    <select class = "form-control" type="text" id="countryId" th:field="*{countryId}">
+                        <option value="0">Select Country</option>
+                        <option th:each="country : ${countries}" th:value="${country.countryId}" th:text="${country.countryName}"></option>
+                    </select>
+                    <!--                    <input class = "form-control" type="text" id="countryId" th:field="*{countryId}" size="50" >-->
                 </div>
                 <div class="form-group align-bottom" style="margin-top: 2em; display: flex">
                     <button type="submit" name="action" value = "save" class="btn btn-lg btn-primary" style="margin-right: .5em; width: 50%">Save</button>

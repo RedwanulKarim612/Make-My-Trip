@@ -27,6 +27,7 @@ public class TemplateController {
     JwtUtil jwtUtil;
 
 
+
     @GetMapping("admin/models/add")
     public String getAddModelView(Model model1){
         com.MakeMyTrip.Model model =  new com.MakeMyTrip.Model();
@@ -54,20 +55,9 @@ public class TemplateController {
         return "admin-transactions-add";
     }
 
-    @GetMapping("admin/cities/add")
-    public String getAddCityView(Model model){
-        City city = new City();
-        model.addAttribute(city);
-        return "admin-cities-add";
-    }
 
 
-    @GetMapping("admin/vehicles/add")
-    public String getAddVehicleView(Model model){
-        Vehicle vehicle = new Vehicle();
-        model.addAttribute(vehicle);
-        return "admin-vehicles-add";
-    }
+
 
     @GetMapping("/login")
     public String getLoginPage(Model model){

@@ -16,9 +16,8 @@
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
                 <a href="#" class="navbar-brand"> Make My Trip</a>
-
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link" href="admin/home">home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/admin/home">home</a></li>
                     <li class="nav-item"><a class="nav-link" href="/admin/trips">Trips</a></li>
                     <li class="nav-item"><a class="nav-link" href="/admin/vehicles">Vehicles</a></li>
                     <li class="nav-item"><a class="nav-link" href="/admin/models">Models</a></li>
@@ -37,15 +36,15 @@
 
 <div class="main-div">
     <div>
-        <h3>Add New Country</h3>
+        <h3>Add New City</h3>
     </div>
     <div style="vertical-align: center">
         <form th:action="@{/admin/cities/add}" method="post" th:object="${city}" >
             <div class = "form-inline" style="width: 60%; margin: 1em auto 1em auto">
-                <div class="form-group mb-3">
-                    <label class="form-label" for="cityId"> City Id: </label>
-                    <input class = "form-control" type="text" id="cityId" th:field="*{cityId}"  size="50" >
-                </div>
+<!--                <div class="form-group mb-3">-->
+<!--                    <label class="form-label" for="cityId"> City Id: </label>-->
+<!--                    <input class = "form-control" type="text" id="cityId" th:field="*{cityId}"  size="50" >-->
+<!--                </div>-->
                 <div class="form-group">
                     <label class="form-label" for="cityName"> City Name: </label>
                     <input class = "form-control" type="text" id="cityName" th:field="*{cityName}" size="50" >
@@ -56,8 +55,11 @@
                     <input class = "form-control" type="text" id="timeZone" th:field="*{timezone}" size="50" >
                 </div>
                 <div class="form-group">
-                    <label class="form-label" for="countryId"> Country Id: </label>
-                    <input class = "form-control" type="text" id="countryId" th:field="*{countryId}" size="50" >
+                    <label class="form-label" for="countryId"> Country : </label>
+                    <select class = "form-control" type="text" id="countryId" th:field="*{countryId}">
+                        <option value="0">Select Country</option>
+                        <option th:each="country : ${countries}" th:value="${country.countryId}" th:text="${country.countryName}"></option>
+                    </select>
                 </div>
                 <div class="form-group align-bottom" style="margin-top: 2em; display: flex">
                     <button type="submit" name="action" value = "add" class="btn btn-lg btn-primary" style="margin-right: .5em; width: 50%">Add</button>
