@@ -30,15 +30,15 @@ public class CustomerUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
         try{
             String role = userRoleDAO.getRoleById(username);
-            if(role.equalsIgnoreCase("customer")) {
+            if(role.equalsIgnoreCase("CUSTOMER")) {
                 Customer customer = customerDAO.getCustomerByUsernameForAuth(username);
                 return new User(customer.getUserId(), customer.getPassword(), getAuthority(role));
             }
-            else if(role.equalsIgnoreCase("company")){
+            else if(role.equalsIgnoreCase("COMPANY")){
                 Company company = companyDAO.getCompanyForAuth(username);
                 return new User(company.getCompanyId(), company.getPassword(), getAuthority(role));
             }
-            else if(role.equalsIgnoreCase("admin")){
+            else if(role.equalsIgnoreCase("ADMIN")){
                 Admin admin = adminDAO.getAdminByIdForAuth(username);
                 return new User(admin.getAdminId(), admin.getPassword(), getAuthority(role));
             }

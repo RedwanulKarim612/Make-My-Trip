@@ -2,9 +2,11 @@ package com.MakeMyTrip;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.Banner;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -12,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.text.ParseException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class VehicleController {
@@ -35,6 +38,19 @@ public class VehicleController {
         }
     }
 
+    @RequestMapping("company/vehicles")
+    @PostMapping(path = "/company/vehicles" , params = "action=reset")
+    public ModelAndView getAllVehiclesByCompany(){
+        ModelAndView modelAndView = new ModelAndView("company-vehicles");
+        try{
+            modelAndView.addObject("vehicles", vehicleDAO.getAllVehiclesByCompany());
+            return modelAndView;
+        }
+        catch (EmptyResultDataAccessException e){
+            return null;
+        }
+    }
+
     @GetMapping("/admin/vehicles/{vehicleId}")
     public ModelAndView getVehicleById(@PathVariable String vehicleId){
         try{
@@ -47,6 +63,20 @@ public class VehicleController {
         }
     }
 
+    @GetMapping("/company/vehicles/{vehicleId}")
+    public ModelAndView getVehicleByIdAndCompany(@PathVariable String vehicleId){
+        try{
+            ModelAndView modelAndView = new ModelAndView("company-vehicle-single");
+            modelAndView.addObject("vehicle",vehicleDAO.getVehicleByIdInfo(vehicleId,SecurityContextHolder.getContext().getAuthentication().getName()).get(0));
+            return modelAndView;
+        }
+        catch (EmptyResultDataAccessException e){
+            return null;
+        }
+    }
+
+
+
     @PostMapping(value = "/admin/vehicles/add", params = "action=add")
     public ModelAndView addVehicle(Vehicle vehicle){
         try {
@@ -57,9 +87,27 @@ public class VehicleController {
         }
     }
 
+    @PostMapping(value = "/company/vehicles/add", params = "action=add")
+    public ModelAndView addVehicleCompany(Vehicle vehicle){
+        try {
+            vehicle.setCompanyId(SecurityContextHolder.getContext().getAuthentication().getName());
+            vehicleDAO.addVehicle(vehicle);
+            return new ModelAndView("redirect:/company/vehicles/" + vehicle.getVehicleId());
+        } catch (DataIntegrityViolationException | ParseException e){
+            return new ModelAndView("redirect:/company/vehicles");
+        }
+    }
+
+
     @PostMapping(value = "admin/vehicles/add", params = "action=cancel")
     public ModelAndView cancelAdd(){
         return new ModelAndView("redirect:/admin/vehicles");
+    }
+
+
+    @PostMapping(value = "company/vehicles/add", params = "action=cancel")
+    public ModelAndView cancelAddCompany(){
+        return new ModelAndView("redirect:/company/vehicles");
     }
 
     @PostMapping(path = "admin/vehicles", params = "action=search")
@@ -67,6 +115,18 @@ public class VehicleController {
         ModelAndView modelAndView = new ModelAndView("admin-vehicles");
         try{
             modelAndView.addObject("vehicles", vehicleDAO.getVehicleByIdInfo(vehicleId));
+        }
+        catch (EmptyResultDataAccessException e){
+
+        }
+        return modelAndView;
+    }
+
+    @PostMapping(path = "company/vehicles", params = "action=search")
+    public ModelAndView searchVehicleByCompany(@RequestParam String vehicleId){
+        ModelAndView modelAndView = new ModelAndView("company-vehicles");
+        try{
+            modelAndView.addObject("vehicles", vehicleDAO.getVehicleByIdInfo(vehicleId,SecurityContextHolder.getContext().getAuthentication().getName()));
         }
         catch (EmptyResultDataAccessException e){
 
@@ -110,10 +170,13 @@ public class VehicleController {
         return new ModelAndView("redirect:/admin/vehicles/" + vehicleId );
     }
 
-    @GetMapping("admin/vehicles/add")
+    @GetMapping({"admin/vehicles/add","company/vehicles/add"})
     public ModelAndView getAddVehicleView(Model model){
         Vehicle vehicle = new Vehicle();
-        ModelAndView modelAndView = new ModelAndView("admin-vehicles-add");
+        ModelAndView modelAndView = new ModelAndView();
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"))) modelAndView.setViewName("admin-vehicles-add");
+        else modelAndView.setViewName("company-vehicles-add");
         modelAndView.addObject("vehicle", new Vehicle());
         modelAndView.addObject("companies", companyDAO.getAllCompanies());
         modelAndView.addObject("models", modelDAO.getAllModels());

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -15,10 +16,13 @@ public class CityController {
     @Autowired
     CountryDAO countryDAO;
 
-    @RequestMapping("admin/cities")
-    @PostMapping(path = "admin/cities" , params = "action=reset")
+    @RequestMapping({"admin/cities","company/cities"})
+    @PostMapping(path = {"admin/cities","company/cities"} , params = "action=reset")
     public ModelAndView getAllCities(){
-        ModelAndView modelAndView = new ModelAndView("admin-cities");
+        ModelAndView modelAndView = new ModelAndView();
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"))) modelAndView.setViewName("admin-cities");
+        else modelAndView.setViewName("company-cities");
         try{
             modelAndView.addObject("cities", cityDAO.getAllCitiesWithCountry());
         }
@@ -58,9 +62,12 @@ public class CityController {
     }
 
 
-    @PostMapping(path = "admin/cities" ,params = "action=search")
+    @PostMapping(path = {"admin/cities","company/cities"} ,params = "action=search")
     public ModelAndView searchCity(@RequestParam String cityId){
-        ModelAndView modelAndView = new ModelAndView("admin-cities");
+        ModelAndView modelAndView = new ModelAndView();
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"))) modelAndView.setViewName("admin-cities");
+        else modelAndView.setViewName("company-cities");
         try{
             modelAndView.addObject("cities",cityDAO.getCityInfoById(cityId));
         }

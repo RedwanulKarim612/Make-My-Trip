@@ -6,6 +6,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -16,10 +17,13 @@ public class ModelController {
     @Autowired
     ModelDAO modelDAO;
 
-    @RequestMapping("admin/models")
-    @PostMapping(path = "admin/models" , params = "action=reset")
+    @RequestMapping({"admin/models","company/models"})
+    @PostMapping(path = {"admin/models","company/models"} , params = "action=reset")
     public ModelAndView getAllModels() {
-        ModelAndView modelAndView = new ModelAndView("admin-models");
+        ModelAndView modelAndView = new ModelAndView();
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"))) modelAndView.setViewName("admin-models");
+        else modelAndView.setViewName("company-models");
         modelAndView.addObject("models",modelDAO.getAllModels());
         return modelAndView;
 
@@ -62,10 +66,12 @@ public class ModelController {
 
 
 
-    @PostMapping(path = "admin/models", params = "action=search")
+    @PostMapping(path = {"admin/models","company/models"}, params = "action=search")
     public ModelAndView searchModel(@RequestParam String modelId){
-
-        ModelAndView modelAndView = new ModelAndView("admin-models");
+        ModelAndView modelAndView = new ModelAndView();
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"))) modelAndView.setViewName("admin-models");
+        else modelAndView.setViewName("company-models");
         try{
             modelAndView.addObject("models",modelDAO.getModelById(modelId));
         }

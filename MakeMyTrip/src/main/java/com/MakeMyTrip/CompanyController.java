@@ -4,9 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
@@ -96,6 +99,26 @@ public class CompanyController {
     @PostMapping(path = "/admin/companies/{companyId}/edit", params = "action=cancel")
     public ModelAndView cancelEdit(@PathVariable String companyId){
         return new ModelAndView("redirect:/admin/companies/" + companyId);
+    }
+
+
+    @RequestMapping("/company/home")
+    public ModelAndView getAdminHome(){
+        ModelAndView modelAndView = new ModelAndView("company-home");
+        modelAndView.addObject("company", companyDAO.getCompanyHome(SecurityContextHolder.getContext().getAuthentication().getName()));
+        return modelAndView;
+    }
+
+    @PostMapping(path = "/company/home" , params = "action=logout")
+    public ModelAndView handleLogout(HttpServletResponse response){
+        Cookie cookie = new Cookie("jwt", null );
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("/");
+        cookie.setDomain("");
+        cookie.setMaxAge(1);
+        response.addCookie(cookie);
+        return new ModelAndView("redirect:/company/login");
     }
 
 

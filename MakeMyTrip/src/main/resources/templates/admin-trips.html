@@ -23,10 +23,10 @@
                     <li class="nav-item"><a class="nav-link" href="/admin/vehicles">Vehicles</a></li>
                     <li class="nav-item"><a class="nav-link" href="/admin/models">Models</a></li>
                     <li class="nav-item"><a class="nav-link" href="/admin/companies">Companies</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/admin/locations">Locations</a></li>
                     <li class="nav-item"><a class="nav-link" href="/admin/cities">Cities</a></li>
                     <li class="nav-item"><a class="nav-link" href="/admin/countries">Countries</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/admin/transactions">Transactions</a></li>
-                </ul>
+                    <li class="nav-item"><a class="nav-link" href="/admin/transactions">Transactions</a></li>   </ul>
             </div>
         </nav>
 
@@ -37,13 +37,13 @@
 <div class="main-div" >
 
     <div>
-        <h3>Cities</h3>
+        <h3>Trips</h3>
     </div>
     <div style="vertical-align: middle">
         <!--        edit-->
         <form th:action="@{/admin/trips}" method="post" >
             <div class = "input-group" style="width: 60%; margin: 1em auto 1em auto">
-                <input class = "form-control" type="text" id="cityId" name="cityId"  placeholder="Find by City Id" size="50" >
+                <input class = "form-control" type="text" id="cityName" name="cityName"  placeholder="Find by Starting City" size="50" >
                 <button type="submit" name="action" value = "search" class="btn btn-info" style="margin-right: .5em">Search</button>
                 <button type="submit" name="action" value = "reset" class="btn btn-info">Reset</button>
             </div>

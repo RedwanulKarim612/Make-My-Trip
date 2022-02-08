@@ -57,8 +57,6 @@ public class TemplateController {
 
 
 
-
-
     @GetMapping("/login")
     public String getLoginPage(Model model){
         AuthenticationRequest authenticationRequest = new AuthenticationRequest();

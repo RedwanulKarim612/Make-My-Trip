@@ -6,6 +6,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
@@ -48,6 +49,23 @@ public class VehicleDAO extends JdbcDaoSupport {
                                     todayWithZeroTime,
                                     vehicle.getModelId(),
                                     vehicle.getCompanyId());
+        return true;
+    }
+
+    public boolean addVehicle(Vehicle vehicle, String companyId) throws DataIntegrityViolationException,ParseException{
+        String sql = "INSERT INTO vehicle VALUES(?,?,?,?,?)";
+        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+
+        Date today = new Date();
+
+        Date todayWithZeroTime = null;
+        todayWithZeroTime = formatter.parse(formatter.format(today));
+
+        getJdbcTemplate().update(sql,vehicle.getVehicleId(),
+                vehicle.getRegistrationNo(),
+                todayWithZeroTime,
+                vehicle.getModelId(),
+                companyId);
         return true;
     }
 
@@ -99,5 +117,28 @@ public class VehicleDAO extends JdbcDaoSupport {
                 vehicle.getModelId(),
                 vehicle.getCompanyId(),
                 vehicleId);
+    }
+
+    public List<Map<String,Object>> getAllVehiclesByCompany() throws EmptyResultDataAccessException{
+        String sql = "SELECT V.VEHICLE_ID, V.REGISTRATION_NO, V.DATE_ADDED, V.MODEL_ID, V.COMPANY_ID , C.COMPANY_NAME\n" +
+                "from VEHICLE V \n" +
+                "JOIN COMPANY C\n" +
+                "ON (V.COMPANY_ID = C.COMPANY_ID)\n" +
+                "WHERE V.COMPANY_ID = ?"+
+                "ORDER BY VEHICLE_ID " ;
+        return getJdbcTemplate().queryForList(sql, SecurityContextHolder.getContext().getAuthentication().getName());
+    }
+
+    public List<Map<String,Object>> getVehicleByIdInfo(String vehicleId, String companyId) throws EmptyResultDataAccessException{
+        String sql = "SELECT V.VEHICLE_ID , V.REGISTRATION_NO, V.DATE_ADDED, V.MODEL_ID, V.COMPANY_ID , C.COMPANY_NAME\n" +
+                "FROM VEHICLE V \n" +
+                "JOIN COMPANY C\n" +
+                "ON(V.COMPANY_ID = C.COMPANY_ID)\n" +
+                "WHERE VEHICLE_ID = ? AND " +
+                "V.COMPANY_ID = ?";
+        Map<String,Object> mp = getJdbcTemplate().queryForMap(sql,vehicleId,companyId);
+        List<Map<String,Object>> list = new ArrayList<>();
+        list.add(mp);
+        return list;
     }
 }

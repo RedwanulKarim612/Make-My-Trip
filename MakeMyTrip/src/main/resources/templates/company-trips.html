@@ -18,15 +18,12 @@
                 <a href="#" class="navbar-brand"> Make My Trip</a>
 
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link" href="/admin/home">home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/admin/trips">Trips</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/admin/vehicles">Vehicles</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/admin/models">Models</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/admin/companies">Companies</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/admin/locations">Locations</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/admin/cities">Cities</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/admin/countries">Countries</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/admin/transactions">Transactions</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/company/home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/company/trips">Trips</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/company/vehicles">Vehicles</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/company/models">Models</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/company/cities">Cities</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/company/countries">Countries</a></li>
                 </ul>
             </div>
         </nav>
@@ -35,43 +32,49 @@
     </div>
 </div>
 
+
 <div class="main-div" >
 
     <div>
-        <h3>Transactions</h3>
+        <h3>Trips</h3>
     </div>
     <div style="vertical-align: middle">
         <!--        edit-->
-        <form th:action="@{/admin/transactions}" method="post" >
+        <form th:action="@{/company/trips}" method="post" >
             <div class = "input-group" style="width: 60%; margin: 1em auto 1em auto">
-                <input class = "form-control" type="text" id="transactionId" name="transactionId"  placeholder="Find by Transaction Id" size="50" >
+                <input class = "form-control" type="text" id="cityName" name="cityName"  placeholder="Find by Starting City" size="50" >
                 <button type="submit" name="action" value = "search" class="btn btn-info" style="margin-right: .5em">Search</button>
                 <button type="submit" name="action" value = "reset" class="btn btn-info">Reset</button>
             </div>
         </form>
-        <a class="add-btn" href="/admin/transactions/add" > Add New Transaction</a>
+        <!--        edit-->
+        <a class="add-btn" href="/company/trips/add" > Add New Trip</a>
     </div>
 
     <div >
-        <table class="table table-dark table-striped sortable" style="width: 60%; margin: 1em auto 1em auto">
+        <table class="table table-dark table-striped sortable" style="width: 80%; margin: 1em auto 1em auto">
 
             <thead style="text-align: center; vertical-align: middle">
             <!--            edit-->
             <tr >
-                <th scope="col" th:width="18"><b> Transaction ID </b></th>
-                <th scope="col" th:width="29"><b> Wallet ID </b> </th>
-                <th scope="col" th:width="29"><b> Amount </b> </th>
+                <th scope="col" th:width="13"><b> ID </b></th>
+                <th scope="col" th:width="16"><b> From </b> </th>
+                <th scope="col" th:width="16"><b> To </b> </th>
+                <th scope="col" th:width="20"><b> Starts at </b> </th>
+                <th scope="col" th:width="20"><b> Duration </b> </th>
                 <th scope="col" th:width="7"> </th>
             </tr>
             </thead>
             <tbody>
             <!--            edit-->
-            <tr th:each="transaction : ${transactions}" >
-                <td scope="row" th:text="${transaction.getTransactionId()}"></td>
-                <td scope="row" th:text="${transaction.getWalletId()}"></td>
-                <td scope="row" th:text="${transaction.getAmount()}"></td>
+            <tr th:each="trip : ${trips}" >
+                <td scope="row" th:text="${trip.get('TRIP_ID')}"></td>
+                <td scope="row" th:text="${trip.get('STARTFROM')}"></td>
+                <td scope="row" th:text="${trip.get('DES')}"></td>
+                <td scope="row" th:text="${trip.get('START_TIME')}"></td>
+                <td scope="row" th:text="${trip.get('DURATION')}"></td>
                 <td>
-                    <a th:href="@{'/admin/transactions/' + ${transaction.getTransactionId()}}">view</a>
+                    <a th:href="@{'/company/trips/' + ${trip.get('TRIP_ID')}}">view</a>
                 </td>
             </tr>
             </tbody>

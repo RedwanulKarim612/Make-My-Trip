@@ -80,7 +80,7 @@ public class AuthController {
         catch (BadCredentialsException e){
             System.out.println("bad credential");
             cookie.setMaxAge(0);
-            return new ModelAndView("redirect:/admin/login");
+            return new ModelAndView("redirect:/company/login");
 //            response.addCookie(cookie);
         }
         final UserDetails userDetails = customerUserDetailsService
@@ -91,7 +91,7 @@ public class AuthController {
 //        System.out.println(jwtUtil.getUsernameFromToken(jwt));
 
         response.addCookie(cookie);
-        return new ModelAndView("redirect:/home");
+        return new ModelAndView("redirect:/company/home");
     }
 
     public @ResponseBody void createAuthenticationToken(@ModelAttribute("request") AuthenticationRequest authenticationRequest, HttpServletResponse response) throws Exception{

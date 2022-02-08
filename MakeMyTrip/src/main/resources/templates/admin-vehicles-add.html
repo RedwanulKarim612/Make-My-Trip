@@ -18,11 +18,12 @@
                 <a href="#" class="navbar-brand"> Make My Trip</a>
 
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link" href="admin/home">home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/admin/home">home</a></li>
                     <li class="nav-item"><a class="nav-link" href="/admin/trips">Trips</a></li>
                     <li class="nav-item"><a class="nav-link" href="/admin/vehicles">Vehicles</a></li>
                     <li class="nav-item"><a class="nav-link" href="/admin/models">Models</a></li>
                     <li class="nav-item"><a class="nav-link" href="/admin/companies">Companies</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/admin/locations">Locations</a></li>
                     <li class="nav-item"><a class="nav-link" href="/admin/cities">Cities</a></li>
                     <li class="nav-item"><a class="nav-link" href="/admin/countries">Countries</a></li>
                     <li class="nav-item"><a class="nav-link" href="/admin/transactions">Transactions</a></li>
@@ -54,14 +55,14 @@
                 <div class="form-group">
                     <label class="form-label" for="modelId"> Model: </label>
                     <select class = "form-control" type="text" id="modelId" th:field="*{modelId}">
-                        <option value="0">Select Country</option>
+                        <option value="0">Select Model</option>
                         <option th:each="model : ${models}" th:value="${model.modelId}" th:text="${model.modelId}"></option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="companyId"> Company: </label>
                     <select class = "form-control" type="text" id="companyId" th:field="*{companyId}">
-                        <option value="0">Select Country</option>
+                        <option value="0">Select Company</option>
                         <option th:each="company : ${companies}" th:value="${company.companyId}" th:text="${company.companyName}"></option>
                     </select>
                 </div>

@@ -16,15 +16,14 @@
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
                 <a href="#" class="navbar-brand"> Make My Trip</a>
+
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link" href="/admin/home">home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/admin/trips">Trips</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/admin/vehicles">Vehicles</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/admin/models">Models</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/admin/companies">Companies</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/admin/cities">Cities</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/admin/countries">Countries</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/admin/transactions">Transactions</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/company/home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/company/trips">Trips</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/company/vehicles">Vehicles</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/company/models">Models</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/company/cities">Cities</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/company/countries">Countries</a></li>
                 </ul>
             </div>
         </nav>
@@ -36,10 +35,10 @@
 
 <div class="main-div">
     <div>
-        <h3>Add New City</h3>
+        <h3>Add New Vehicle</h3>
     </div>
     <div style="vertical-align: center">
-        <form th:action="@{/admin/trips/add}" method="post" th:object="${trip}" >
+        <form th:action="@{/company/trips/add}" method="post" th:object="${trip}" >
             <div class = "form-inline" style="width: 60%; margin: 1em auto 1em auto">
                 <!--                <div class="form-group mb-3">-->
                 <!--                    <label class="form-label" for="cityId"> City Id: </label>-->
@@ -57,7 +56,7 @@
                     <label class="form-label" for="destination"> Destination: </label>
                     <select class = "form-control" type="text" id="destination" th:field="*{destination}">
                         <option value="0">Select Location</option>
-                        <option th:each="location : ${startFrom}" th:value="${location.get('LOCATION_ID')}" th:text="${location.get('ADDRESS')} + '(' + ${location.get('CITY_NAME')} + ')'"></option>
+                        <option th:each="location : ${destination}" th:value="${location.get('LOCATION_ID')}" th:text="${location.get('ADDRESS')} + '(' + ${location.get('CITY_NAME')} + ')'"></option>
                     </select>
                 </div>
 
@@ -81,9 +80,14 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label" for="vehicleId"> vehicleId: </label>
-                    <input class = "form-control" type="text" id="vehicleId" th:field="*{vehicleId}" size="50" >
+                    <label class="form-label" for="destination"> Vehicle: </label>
+                    <select class = "form-control" type="text" id="vehicleId" th:field="*{vehicleId}">
+                        <option value="0">Select Vehicle</option>
+                        <option th:each="vehicle : ${vehicles}" th:value="${vehicle.get('VEHICLE_ID')}" th:text="${vehicle.get('VEHICLE_ID')} "></option>
+                    </select>
                 </div>
+
+
 
                 <div class="form-group align-bottom" style="margin-top: 2em; display: flex">
                     <button type="submit" name="action" value = "add" class="btn btn-lg btn-primary" style="margin-right: .5em; width: 50%">Add</button>
@@ -93,6 +97,5 @@
         </form>
     </div>
 </div>
-
 </body>
 </html>

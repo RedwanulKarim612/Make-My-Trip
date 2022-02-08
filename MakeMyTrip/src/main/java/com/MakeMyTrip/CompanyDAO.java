@@ -55,6 +55,12 @@ public class CompanyDAO extends JdbcDaoSupport {
         getJdbcTemplate().update(sql,company.getCompanyId(),company.getCompanyName(),companyId);
     }
 
+    public Company getCompanyHome(String companyId){
+        String sql = "SELECT * FROM company WHERE company_id = ?";
+        return getJdbcTemplate().queryForObject(sql,BeanPropertyRowMapper.newInstance(Company.class),companyId);
+
+    }
+
     public Company getCompanyForAuth(String username) {
         String sql = "SELECT company_id, password FROM company WHERE company_id = ?";
         return getJdbcTemplate().queryForObject(sql,BeanPropertyRowMapper.newInstance(Company.class),username);

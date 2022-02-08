@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -15,10 +16,13 @@ public class CountryController {
     @Autowired
     CountryDAO countryDAO;
 
-    @RequestMapping("admin/countries")
-    @PostMapping(path = "admin/countries" , params = "action=reset")
+    @RequestMapping({"admin/countries","company/countries"})
+    @PostMapping(path = {"admin/countries","company/countries"} , params = "action=reset")
     public ModelAndView getAllCountries() {
-        ModelAndView modelAndView = new ModelAndView("admin-countries");
+        ModelAndView modelAndView = new ModelAndView();
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"))) modelAndView.setViewName("admin-countries");
+        else modelAndView.setViewName("company-countries");
         modelAndView.addObject("countries" , countryDAO.getAllCountries());
         return modelAndView;
     }
@@ -53,9 +57,12 @@ public class CountryController {
     }
 
 
-    @PostMapping(path = "admin/countries", params = "action=search")
+    @PostMapping(path = {"admin/countries","company/countries"}, params = "action=search")
     public ModelAndView searchCountry(@RequestParam String countryId){
-        ModelAndView modelAndView = new ModelAndView("admin-countries");
+        ModelAndView modelAndView = new ModelAndView();
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"))) modelAndView.setViewName("admin-countries");
+        else modelAndView.setViewName("company-countries");
         try{
             modelAndView.addObject("countries", countryDAO.getCountryById(countryId));
         }

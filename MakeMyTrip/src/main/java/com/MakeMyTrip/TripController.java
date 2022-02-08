@@ -4,19 +4,39 @@ package com.MakeMyTrip;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.Map;
 
 @RestController
 public class TripController {
     @Autowired
     TripDAO tripDAO;
-
+    @Autowired
+    LocationDAO locationDAO;
+    @Autowired
+    VehicleDAO vehicleDAO;
     @RequestMapping("admin/trips")
+    @PostMapping(path = "/admin/trips" , params = "action=reset")
     public ModelAndView getAllTrips(){
         ModelAndView modelAndView = new ModelAndView("admin-trips");
         try {
             modelAndView.addObject("trips", tripDAO.getAllTrips());
+        }
+        catch (EmptyResultDataAccessException e){
+            //
+        }
+        return modelAndView;
+    }
+
+    @RequestMapping("company/trips")
+    @PostMapping(path = "/company/trips" , params = "action=reset")
+    public ModelAndView getAllTripsByCompany(){
+        ModelAndView modelAndView = new ModelAndView("company-trips");
+        try {
+            modelAndView.addObject("trips", tripDAO.getAllTripsByCompany(SecurityContextHolder.getContext().getAuthentication().getName()));
         }
         catch (EmptyResultDataAccessException e){
             //
@@ -36,23 +56,73 @@ public class TripController {
         return modelAndView;
     }
 
-    @GetMapping("admin/trips/add")
-    public ModelAndView getAddCityView(){
-        ModelAndView modelAndView = new ModelAndView("admin-trips-add");
-        modelAndView.addObject("trip", new Trip());
+    @PostMapping(path = "admin/trips", params = "action=search")
+    public ModelAndView searchVehicle(@RequestParam String cityName){
+        System.out.println(cityName);
+        ModelAndView modelAndView = new ModelAndView("admin-trips");
+        try{
+            modelAndView.addObject("trips", tripDAO.searchTrips(cityName));
+        }
+        catch (EmptyResultDataAccessException e){
+
+        }
         return modelAndView;
     }
 
-    @PostMapping(path = "admin/trips/add")
+    @PostMapping(path = "company/trips", params = "action=search")
+    public ModelAndView searchVehicleByCompany(@RequestParam String cityName){
+        ModelAndView modelAndView = new ModelAndView("company-trips");
+        try{
+            modelAndView.addObject("trips", tripDAO.searchTrips(cityName,SecurityContextHolder.getContext().getAuthentication().getName()));
+        }
+        catch (EmptyResultDataAccessException e){
+
+        }
+        return modelAndView;
+    }
+
+    @GetMapping(path = "company/trips/{tripId}")
+    public ModelAndView getTripByIdAndCompany(@PathVariable String tripId){
+        ModelAndView modelAndView = new ModelAndView("company-trip-single");
+        try{
+            modelAndView.addObject("trip", tripDAO.getTripByIdAndCompany(tripId, SecurityContextHolder.getContext().getAuthentication().getName()));
+            return modelAndView;
+
+        }
+        catch (EmptyResultDataAccessException e){
+            return null;
+        }
+
+    }
+
+    @GetMapping({"admin/trips/add","/company/trips/add"})
+    public ModelAndView getAddCityView(){
+        ModelAndView modelAndView = new ModelAndView();
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"))) modelAndView.setViewName("admin-trips-add");
+        else modelAndView.setViewName("company-trips-add");
+        modelAndView.addObject("trip", new Trip());
+        var locations = locationDAO.getAllLocations();
+        modelAndView.addObject("startFrom" , locations);
+        modelAndView.addObject("destination" , locations);
+        modelAndView.addObject("vehicles",vehicleDAO.getAllVehiclesByCompany());
+        return modelAndView;
+    }
+
+    @PostMapping(path = {"admin/trips/add","/company/trips/add"})
     public ModelAndView addTrip(Trip trip){
         System.out.println(trip);
-        ModelAndView modelAndView = new ModelAndView("admin-trips-add");
+
         try{
             tripDAO.addTrip(trip);
         }
         catch (DataIntegrityViolationException e){
 
         }
-        return new ModelAndView("redirect:/admin/trips");
+
+        ModelAndView modelAndView = new ModelAndView();
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"))) return new ModelAndView("redirect:/admin/trips");
+        else return new ModelAndView("redirect:/company/trips");
     }
 }
