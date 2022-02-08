@@ -63,13 +63,13 @@ public class CityController {
 
 
     @PostMapping(path = {"admin/cities","company/cities"} ,params = "action=search")
-    public ModelAndView searchCity(@RequestParam String cityId){
+    public ModelAndView searchCity(@RequestParam String cityName){
         ModelAndView modelAndView = new ModelAndView();
         if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
                 .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"))) modelAndView.setViewName("admin-cities");
         else modelAndView.setViewName("company-cities");
         try{
-            modelAndView.addObject("cities",cityDAO.getCityInfoById(cityId));
+            modelAndView.addObject("cities",cityDAO.getCityInfoLikeName(cityName));
         }
         catch (EmptyResultDataAccessException e){
             //no city;

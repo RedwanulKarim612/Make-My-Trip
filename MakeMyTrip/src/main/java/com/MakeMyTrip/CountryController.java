@@ -58,13 +58,13 @@ public class CountryController {
 
 
     @PostMapping(path = {"admin/countries","company/countries"}, params = "action=search")
-    public ModelAndView searchCountry(@RequestParam String countryId){
+    public ModelAndView searchCountry(@RequestParam String countryName){
         ModelAndView modelAndView = new ModelAndView();
         if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
                 .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"))) modelAndView.setViewName("admin-countries");
         else modelAndView.setViewName("company-countries");
         try{
-            modelAndView.addObject("countries", countryDAO.getCountryById(countryId));
+            modelAndView.addObject("countries", countryDAO.getCountryLikeName(countryName));
         }
         catch (EmptyResultDataAccessException e){
 

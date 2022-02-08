@@ -49,6 +49,17 @@ public class CityDAO extends JdbcDaoSupport {
         l.add(mp);
         return l;
     }
+    public List<Map<String, Object>> getCityInfoLikeName(String cityName) throws EmptyResultDataAccessException{
+        String sql = "SELECT CT.CITY_ID , CT.CITY_NAME, CN.COUNTRY_ID, CN.COUNTRY_NAME, CT.TIMEZONE\n" +
+                "FROM CITY CT \n" +
+                "JOIN COUNTRY CN\n" +
+                "ON(CT.COUNTRY_ID = CN.COUNTRY_ID) " +
+                "WHERE UPPER(CT.CITY_NAME) LIKE ?";
+        Map<String, Object> mp =  getJdbcTemplate().queryForMap(sql, cityName.toUpperCase().concat("%"));
+        List<Map<String, Object>> l =new ArrayList<>();
+        l.add(mp);
+        return l;
+    }
 
 
     public void addCity(City city) throws DataIntegrityViolationException {

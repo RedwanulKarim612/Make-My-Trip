@@ -70,7 +70,7 @@ public class LocationDAO extends JdbcDaoSupport {
         String sql = "SELECT l.location_id,l.address,c.city_name " +
                 "FROM LOCATION l join CITY c " +
                 "ON(l.CITY_ID = c.CITY_ID) " +
-                "WHERE C.CITY_NAME LIKE ?";
-        return getJdbcTemplate().queryForList(sql,cityNameLike.concat("%"));
+                "WHERE UPPER(C.CITY_NAME) LIKE ?";
+        return getJdbcTemplate().queryForList(sql,cityNameLike.toUpperCase().concat("%"));
     }
 }
