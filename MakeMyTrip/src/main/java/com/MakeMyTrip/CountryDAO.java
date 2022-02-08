@@ -51,8 +51,8 @@ public class CountryDAO extends JdbcDaoSupport {
         getJdbcTemplate().update(sql,country.getCountryId(),country.getCountryName(),countryId);
     }
 
-    public Country getCountryLikeName(String countryName) throws EmptyResultDataAccessException{
+    public List<Country> getCountryLikeName(String countryName) throws EmptyResultDataAccessException{
         String sql = "SELECT * FROM country WHERE UPPER(country_name) LIKE ?";
-        return getJdbcTemplate().queryForObject(sql,BeanPropertyRowMapper.newInstance(Country.class),countryName.toUpperCase().concat("%"));
+        return getJdbcTemplate().query(sql,BeanPropertyRowMapper.newInstance(Country.class),countryName.toUpperCase().concat("%"));
     }
 }

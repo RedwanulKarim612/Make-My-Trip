@@ -18,6 +18,7 @@ public class CompanyController {
     CompanyDAO companyDAO;
 
     @RequestMapping("/admin/companies")
+    @PostMapping(value = "/admin/companies", params = "action=reset")
     public ModelAndView getAllCompanies(){
         ModelAndView modelAndView = new ModelAndView("admin-companies");
         modelAndView.addObject("companies", companyDAO.getAllCompanies());
@@ -54,7 +55,7 @@ public class CompanyController {
     }
 
 
-    @PostMapping(path = "admin/companies", params = "action=search")
+    @PostMapping(path = "/admin/companies", params = "action=search")
     public ModelAndView searchCompany(@RequestParam String companyId){
         ModelAndView modelAndView = new ModelAndView("admin-companies");
         try{

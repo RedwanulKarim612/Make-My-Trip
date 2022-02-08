@@ -55,10 +55,8 @@ public class CityDAO extends JdbcDaoSupport {
                 "JOIN COUNTRY CN\n" +
                 "ON(CT.COUNTRY_ID = CN.COUNTRY_ID) " +
                 "WHERE UPPER(CT.CITY_NAME) LIKE ?";
-        Map<String, Object> mp =  getJdbcTemplate().queryForMap(sql, cityName.toUpperCase().concat("%"));
-        List<Map<String, Object>> l =new ArrayList<>();
-        l.add(mp);
-        return l;
+        return getJdbcTemplate().queryForList(sql, cityName.toUpperCase().concat("%"));
+
     }
 
 
