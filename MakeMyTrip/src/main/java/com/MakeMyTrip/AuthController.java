@@ -34,7 +34,7 @@ public class AuthController {
         } catch (Exception e) {
             return new ModelAndView("redirect:/login");
         }
-        ModelAndView modelAndView  = new ModelAndView("redirect:/home");
+        ModelAndView modelAndView  = new ModelAndView("redirect:/user/home");
         return modelAndView;
     }
 
@@ -135,6 +135,6 @@ public class AuthController {
         request.setUsername(customer.getUserId());
         request.setPassword(customer.getPassword());
         createAuthenticationToken(request,response);
-        return new ModelAndView("redirect:/home");
+        return new ModelAndView("redirect:/user/home");
     }
 }

@@ -43,7 +43,7 @@ public class CountryController {
     public ModelAndView addCountry(@ModelAttribute ("country") Country country){
         try{
             countryDAO.addCountry(country);
-            return new ModelAndView("redirect:/admin/countries/" + country.getCountryId());
+            return new ModelAndView("redirect:/admin/countries");
         }
         catch (DataIntegrityViolationException e){
             return new ModelAndView("redirect:/admin/countries");

@@ -104,4 +104,5 @@ public class TripDAO extends JdbcDaoSupport {
         return getJdbcTemplate().queryForList(sql,companyId,cityName.concat("%"));
     }
 
+
 }

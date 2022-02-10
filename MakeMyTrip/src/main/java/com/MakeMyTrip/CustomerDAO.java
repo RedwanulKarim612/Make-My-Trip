@@ -34,4 +34,26 @@ public class CustomerDAO extends JdbcDaoSupport {
                 "values(?,?,?,?)";
         getJdbcTemplate().update(sql,customer.getUserId(),customer.getPassword(),customer.getName(),customer.getEmail());
     }
+
+    public Customer getCustomerInfo(String userId){
+        System.out.println(userId);
+        String sql = "SELECT * FROM customer WHERE user_id = ?";
+        return (Customer) getJdbcTemplate().queryForObject(sql, BeanPropertyRowMapper.newInstance(Customer.class),userId);
+
+    }
+
+    public Double getAmountInWallet(String userId){
+        String sql = "SELECT amount FROM WALLET WHERE customer_id = ?";
+        return getJdbcTemplate().queryForObject(sql,Double.class,userId);
+    }
+
+    public void verifyTransaction(String transactionId, String name) {
+        try {
+            String sql = "UPDATE TRANSACTION SET WALLET_ID = (SELECT WALLET_ID FROM WALLET WHERE CUSTOMER_ID = ?) WHERE TRANSACTION_ID = ?";
+            getJdbcTemplate().update(sql, name, transactionId);
+        }
+        catch (Exception e){
+            //
+        }
+    }
 }

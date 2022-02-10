@@ -33,7 +33,8 @@ public class CityDAO extends JdbcDaoSupport {
         String sql = "SELECT CT.CITY_ID , CT.CITY_NAME, CN.COUNTRY_ID, CN.COUNTRY_NAME, CT.TIMEZONE\n" +
                 "FROM CITY CT \n" +
                 "JOIN COUNTRY CN\n" +
-                "ON(CT.COUNTRY_ID = CN.COUNTRY_ID)";
+                "ON(CT.COUNTRY_ID = CN.COUNTRY_ID) " +
+                "ORDER BY CT.CITY_NAME";
 
         return getJdbcTemplate().queryForList(sql);
     }

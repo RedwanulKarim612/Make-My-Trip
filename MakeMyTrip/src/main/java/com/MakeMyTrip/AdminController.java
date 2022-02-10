@@ -25,7 +25,7 @@ public class AdminController {
 
     @PostMapping(path = "/admin/home" , params = "action=logout")
     public ModelAndView handleLogout(HttpServletResponse response){
-        System.out.println("logout");
+//        System.out.println("logout");
         Cookie cookie = new Cookie("jwt", null );
         cookie.setHttpOnly(true);
         cookie.setSecure(true);

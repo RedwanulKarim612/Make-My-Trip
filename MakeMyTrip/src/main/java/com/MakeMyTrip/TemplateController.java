@@ -85,8 +85,8 @@ public class TemplateController {
         return "company-login";
     }
 
-    @GetMapping("/home")
-    public String getHomePage(){
-        return "home";
-    }
+//    @GetMapping("/user/home")
+//    public String getHomePage(){
+//        return "home";
+//    }
 }

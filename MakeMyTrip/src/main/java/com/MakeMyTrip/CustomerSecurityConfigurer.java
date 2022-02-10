@@ -38,7 +38,7 @@ public class CustomerSecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/login","/admin/login","/company/login").permitAll()
                 .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/user").hasRole("CUSTOMER")
+                .antMatchers("/user/**").hasRole("CUSTOMER")
                 .antMatchers("/company/**").hasRole("COMPANY")
 //                .anyRequest()
 //                .authenticated()
