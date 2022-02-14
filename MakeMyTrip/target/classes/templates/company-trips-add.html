@@ -1,0 +1,101 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Make My Trip admin</title>
+    <link th:href="@{/styles/admin_main.css}" type="text/css" href="" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link href="https://getbootstrap.com/docs/4.0/examples/signin/signin.css" rel="stylesheet" crossorigin="anonymous">
+</head>
+<body>
+<div class = "nav-bar" style="margin-top: 2%">
+    <div class="container">
+
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a href="#" class="navbar-brand"> Make My Trip</a>
+
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="/company/home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/company/trips">Trips</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/company/vehicles">Vehicles</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/company/models">Models</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/company/cities">Cities</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/company/countries">Countries</a></li>
+                </ul>
+            </div>
+        </nav>
+
+
+    </div>
+</div>
+
+
+<div class="main-div">
+    <div>
+        <h3>Add New Vehicle</h3>
+    </div>
+    <div style="vertical-align: center">
+        <form th:action="@{/company/trips/add}" method="post" th:object="${trip}" >
+            <div class = "form-inline" style="width: 60%; margin: 1em auto 1em auto">
+                <!--                <div class="form-group mb-3">-->
+                <!--                    <label class="form-label" for="cityId"> City Id: </label>-->
+                <!--                    <input class = "form-control" type="text" id="cityId" th:field="*{cityId}"  size="50" >-->
+                <!--                </div>-->
+                <div class="form-group">
+                    <label class="form-label" for="startFrom"> Start from: </label>
+                    <select class = "form-control" type="text" id="startFrom" th:field="*{startFrom}">
+                        <option value="0">Select Location</option>
+                        <option th:each="location : ${startFrom}" th:value="${location.get('LOCATION_ID')}" th:text="${location.get('ADDRESS')} + '(' + ${location.get('CITY_NAME')} + ')'"></option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="destination"> Destination: </label>
+                    <select class = "form-control" type="text" id="destination" th:field="*{destination}">
+                        <option value="0">Select Location</option>
+                        <option th:each="location : ${destination}" th:value="${location.get('LOCATION_ID')}" th:text="${location.get('ADDRESS')} + '(' + ${location.get('CITY_NAME')} + ')'"></option>
+                    </select>
+                </div>
+
+
+                <div class="form-group">
+                    <label class="form-label" for="startTime"> Time: </label>
+                    <input class = "form-control" type="datetime-local" id="startTime" th:field="*{date}" size="50" >
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="duration"> Duration: </label>
+                    <input class = "form-control" type="text" id="duration" th:field="*{duration}" size="50" >
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="basePrice"> Base price: </label>
+                    <input class = "form-control" type="text" id="basePrice" th:field="*{basePrice}" size="50" >
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="upgradePct"> upgrade pct: </label>
+                    <input class = "form-control" type="text" id="upgradePct" th:field="*{upgradePct}" size="50" >
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="destination"> Vehicle: </label>
+                    <select class = "form-control" type="text" id="vehicleId" th:field="*{vehicleId}">
+                        <option value="0">Select Vehicle</option>
+                        <option th:each="vehicle : ${vehicles}" th:value="${vehicle.get('VEHICLE_ID')}" th:text="${vehicle.get('VEHICLE_ID')} "></option>
+                    </select>
+                </div>
+
+
+
+                <div class="form-group align-bottom" style="margin-top: 2em; display: flex">
+                    <button type="submit" name="action" value = "add" class="btn btn-lg btn-primary" style="margin-right: .5em; width: 50%">Add</button>
+                    <button type="submit" name="action" value = "cancel" class="btn btn-lg btn-secondary" style="margin-right: .5em; width: 50%">Cancel</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>
