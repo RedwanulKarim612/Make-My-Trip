@@ -8,8 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository
 public class TripDAO extends JdbcDaoSupport {
@@ -92,6 +91,7 @@ public class TripDAO extends JdbcDaoSupport {
         return getJdbcTemplate().queryForList(sql,cityName.concat("%"));
     }
 
+
     public List<Map<String,Object>> searchTrips(String cityName,String companyId) {
         String sql =
                 "SELECT t.trip_id, t.BASE_PRICE, t.UPGRADE_PCT, t.START_TIME,t.DURATION, c1.CITY_NAME as STARTFROM, c2.CITY_NAME as DES\n" +
@@ -104,5 +104,57 @@ public class TripDAO extends JdbcDaoSupport {
         return getJdbcTemplate().queryForList(sql,companyId,cityName.concat("%"));
     }
 
+
+
+    public List<Trip> searchTripReq(SearchRequest req) {
+        String sql =
+                "SELECT * FROM TRIP t " +
+                        "WHERE t.START_TIME >= ? " +
+                        "AND (SELECT L.CITY_ID FROM LOCATION L WHERE t.START_FROM = L.LOCATION_ID) = ? " +
+                        "AND (SELECT COUNT(*) FROM TICKET t2 WHERE t.TRIP_ID = t2.TRIP_ID AND t2.TYPE = ?) >= ? ";
+        return getJdbcTemplate().query(sql, BeanPropertyRowMapper.newInstance(Trip.class), req.getTravellingDate(),
+                req.getStartingCity(), req.getType(), req.getNumberOfTravellers());
+
+    }
+
+    private String getCity(String loc){
+        String sql = "SELECT L.CITY_ID FROM LOCATION L WHERE L.LOCATION_ID = ?";
+        return getJdbcTemplate().queryForObject(sql, BeanPropertyRowMapper.newInstance(String.class), loc);
+    }
+
+    private List<Plan> searchPlanUtil(SearchRequest req, int dep){
+        if(req.getStartingCity() == req.getDestinationCity())return new ArrayList<Plan>();
+        if(dep == 0)return null;
+        List<Plan> ret = new ArrayList<Plan>();
+        List<Trip> l = searchTripReq(req);
+        CityDAO cd = new CityDAO();
+        City c = cd.getCityById(req.getStartingCity());
+        for(Trip t : l){
+            SearchRequest req2 = new SearchRequest(req);
+            City c2 = cd.getCityById(getCity(t.getDestination()));
+            req2.setStartingCity(c2.getCityId());
+            req2.setTravellingDate(new Date(req.getTravellingDate().getTime() + (long)((t.getDuration() +
+                    (long)c2.getTimezone() - (long)c.getTimezone())* 3600 * 1000)));
+            List<Plan> temp = searchPlanUtil(req2, dep - 1);
+            if(temp == null)continue;
+            for(Plan p : temp){
+                boolean ok = true;
+                for(Trip k : p.getTrips()){
+                    if(getCity(k.getDestination()) == c.getCityId())ok = false;
+                }
+                if(ok){
+                    p.addTrip(t);
+                    ret.add(p);
+                }
+            }
+        }
+
+        return ret;
+    }
+    public List<Plan> searchPlan(SearchRequest req){
+        List<Plan> ret = searchPlanUtil(req, 3);
+        for(Plan p : ret)p.organize(req);
+        return ret;
+    }
 
 }
