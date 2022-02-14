@@ -23,6 +23,14 @@ public class SearchRequest {
         this.travellingDate = travellingDate;
     }
 
+    public SearchRequest(SearchRequest sr) {
+        this.startingCity = sr.startingCity;
+        this.destinationCity = sr.destinationCity;
+        this.type = sr.type;
+        this.numberOfTravellers = sr.numberOfTravellers;
+        this.travellingDate = sr.travellingDate;
+    }
+
     public String getStartingCity() {
         return startingCity;
     }
