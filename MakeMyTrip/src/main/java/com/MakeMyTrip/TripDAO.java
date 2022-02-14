@@ -168,6 +168,8 @@ public class TripDAO extends JdbcDaoSupport {
                 }
             }
         }
+
+
         return ret;
     }
     public List<Plan> searchPlan(SearchRequest req){
