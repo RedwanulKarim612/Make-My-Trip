@@ -103,6 +103,4 @@ public class TripDAO extends JdbcDaoSupport {
                         "WHERE v.company_id = ? and c1.CITY_NAME like ?";
         return getJdbcTemplate().queryForList(sql,companyId,cityName.concat("%"));
     }
-
-
 }

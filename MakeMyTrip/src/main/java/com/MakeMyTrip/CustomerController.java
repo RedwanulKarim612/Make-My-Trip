@@ -12,6 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 
 @RestController
 public class CustomerController {
@@ -19,6 +20,7 @@ public class CustomerController {
     CustomerDAO customerDAO;
     @Autowired
     CityDAO cityDAO;
+
 
     @GetMapping("/user/profile")
     public ModelAndView getCustomerProfile(){
@@ -63,5 +65,16 @@ public class CustomerController {
     public ModelAndView handleSearch(SearchRequest searchRequest){
         System.out.println(searchRequest);
         return new ModelAndView("redirect:/user/home");
+    }
+
+    @PostMapping(path = "/user/home/search", params = "viewPlan")
+    public ModelAndView handleBooking(){
+        ModelAndView modelAndView = new ModelAndView("user-book");
+        ArrayList<Traveller> travellers = new ArrayList<Traveller>(3);
+        for (Traveller traveller: travellers){
+            traveller = new Traveller();
+        }
+        modelAndView.addObject("travellers", travellers);
+        return modelAndView;
     }
 }
