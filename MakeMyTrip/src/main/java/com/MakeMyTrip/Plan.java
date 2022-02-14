@@ -57,7 +57,7 @@ public class Plan {
         numberOfTrips = trips.size();
         this.requestedTickets = req.getNumberOfTravellers();
         price = 0;
-        boolean extra = (req.getType() == "BUSINESS");
+        boolean extra = (req.getType().equals("BUSINESS"));
         for (Trip t : trips){
             price += t.getBasePrice();
             if(extra)price += t.getBasePrice() * t.getUpgradePct() / 100.0;

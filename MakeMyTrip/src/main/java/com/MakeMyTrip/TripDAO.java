@@ -8,12 +8,16 @@ import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Repository
 public class TripDAO extends JdbcDaoSupport {
     @Autowired
     DataSource dataSource;
+    @Autowired
+    CityDAO cd;
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
 
     @PostConstruct
     public void initialize(){
@@ -108,39 +112,55 @@ public class TripDAO extends JdbcDaoSupport {
 
     public List<Trip> searchTripReq(SearchRequest req) {
         String sql =
-                "SELECT * FROM TRIP t " +
+                "SELECT t.trip_id, t.BASE_PRICE, t.UPGRADE_PCT, t.START_TIME,t.DURATION,t.VEHICLE_ID, t.START_FROM, t.DESTINATION FROM TRIP t " +
                         "WHERE t.START_TIME >= ? " +
                         "AND (SELECT L.CITY_ID FROM LOCATION L WHERE t.START_FROM = L.LOCATION_ID) = ? " +
                         "AND (SELECT COUNT(*) FROM TICKET t2 WHERE t.TRIP_ID = t2.TRIP_ID AND t2.TYPE = ?) >= ? ";
-        return getJdbcTemplate().query(sql, BeanPropertyRowMapper.newInstance(Trip.class), req.getTravellingDate(),
+        List<Map<String,Object>> ms =  getJdbcTemplate().queryForList(sql, req.getTravellingDate(),
                 req.getStartingCity(), req.getType(), req.getNumberOfTravellers());
+        List<Trip> trips = new ArrayList<>();
 
+        for(Map m : ms){
+            Trip trip = new Trip();
+            trip.setTripId(m.get("TRIP_ID").toString());
+            trip.setBasePrice(Double.parseDouble(m.get("BASE_PRICE").toString()));
+            trip.setUpgradePct(Double.parseDouble(m.get("UPGRADE_PCT").toString()));
+            trip.setDate(m.get("START_TIME").toString());
+            trip.setDuration(Double.parseDouble(m.get("DURATION").toString()));
+            trip.setVehicleId((String)m.get("VEHICLE_ID").toString());
+            trip.setStartFrom((String)m.get("START_FROM").toString());
+            trip.setDestination((String)m.get("DESTINATION").toString());
+            trips.add(trip);
+        }
+        return trips;
     }
 
     private String getCity(String loc){
         String sql = "SELECT L.CITY_ID FROM LOCATION L WHERE L.LOCATION_ID = ?";
-        return getJdbcTemplate().queryForObject(sql, BeanPropertyRowMapper.newInstance(String.class), loc);
+        return getJdbcTemplate().queryForObject(sql, String.class, loc);
     }
 
     private List<Plan> searchPlanUtil(SearchRequest req, int dep){
-        if(req.getStartingCity() == req.getDestinationCity())return new ArrayList<Plan>();
+        if(req.getStartingCity().equals( req.getDestinationCity()))return new ArrayList<Plan>();
+        System.out.println(req.getTravellingDate());
         if(dep == 0)return null;
         List<Plan> ret = new ArrayList<Plan>();
         List<Trip> l = searchTripReq(req);
-        CityDAO cd = new CityDAO();
+        System.out.println(l.size());
         City c = cd.getCityById(req.getStartingCity());
         for(Trip t : l){
             SearchRequest req2 = new SearchRequest(req);
+            System.out.println(t);
             City c2 = cd.getCityById(getCity(t.getDestination()));
             req2.setStartingCity(c2.getCityId());
-            req2.setTravellingDate(new Date(req.getTravellingDate().getTime() + (long)((t.getDuration() +
+            req2.setTravellingDate(new Date(t.getDate().getTime() + (long)((t.getDuration() +
                     (long)c2.getTimezone() - (long)c.getTimezone())* 3600 * 1000)));
             List<Plan> temp = searchPlanUtil(req2, dep - 1);
             if(temp == null)continue;
             for(Plan p : temp){
                 boolean ok = true;
                 for(Trip k : p.getTrips()){
-                    if(getCity(k.getDestination()) == c.getCityId())ok = false;
+                    if(getCity(k.getDestination()).equals(c.getCityId()))ok = false;
                 }
                 if(ok){
                     p.addTrip(t);
@@ -148,11 +168,11 @@ public class TripDAO extends JdbcDaoSupport {
                 }
             }
         }
-
         return ret;
     }
     public List<Plan> searchPlan(SearchRequest req){
         List<Plan> ret = searchPlanUtil(req, 3);
+        System.out.println(ret.size());
         for(Plan p : ret)p.organize(req);
         return ret;
     }

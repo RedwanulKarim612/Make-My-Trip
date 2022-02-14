@@ -2,13 +2,15 @@ package com.MakeMyTrip;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Trip {
     private String tripId;
     private double basePrice;
     private double upgradePct;
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private Date date;
     private double duration;
     private String vehicleId;
@@ -27,6 +29,7 @@ public class Trip {
         this.vehicleId = vehicleId;
         this.startFrom = startFrom;
         this.destination = destination;
+        System.out.println(date);
     }
 
     public double getDuration() {
@@ -66,6 +69,7 @@ public class Trip {
     }
 
     public void setDate(Date date) {
+        System.out.println(date);
         this.date = date;
     }
 
@@ -105,5 +109,14 @@ public class Trip {
                 ", startFrom='" + startFrom + '\'' +
                 ", destination='" + destination + '\'' +
                 '}';
+    }
+
+    public void setDate(String start_time)  {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        try {
+            this.date = dateFormat.parse(start_time);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 }
