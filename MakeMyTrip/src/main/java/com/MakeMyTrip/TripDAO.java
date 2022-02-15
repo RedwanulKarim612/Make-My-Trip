@@ -141,20 +141,22 @@ public class TripDAO extends JdbcDaoSupport {
     }
 
     private List<Plan> searchPlanUtil(SearchRequest req, int dep){
-        if(req.getStartingCity().equals( req.getDestinationCity()))return new ArrayList<Plan>();
+        if(req.getStartingCity().equals(req.getDestinationCity()))return new ArrayList<Plan>(Arrays.asList(new Plan()));
         System.out.println(req.getTravellingDate());
         if(dep == 0)return null;
         List<Plan> ret = new ArrayList<Plan>();
         List<Trip> l = searchTripReq(req);
-        System.out.println(l.size());
+//        System.out.println(l.size());
         City c = cd.getCityById(req.getStartingCity());
         for(Trip t : l){
             SearchRequest req2 = new SearchRequest(req);
-            System.out.println(t);
+//            System.out.println(t);
             City c2 = cd.getCityById(getCity(t.getDestination()));
             req2.setStartingCity(c2.getCityId());
             req2.setTravellingDate(new Date(t.getDate().getTime() + (long)((t.getDuration() +
-                    (long)c2.getTimezone() - (long)c.getTimezone())* 3600 * 1000)));
+                    c2.getTimezone() -c.getTimezone())*3600*1000)));
+
+//            System.out.println(t.getTripId() + " " + t.getDate() + " d " + req2.getTravellingDate());
             List<Plan> temp = searchPlanUtil(req2, dep - 1);
             if(temp == null)continue;
             for(Plan p : temp){
@@ -168,14 +170,13 @@ public class TripDAO extends JdbcDaoSupport {
                 }
             }
         }
-
-
         return ret;
     }
     public List<Plan> searchPlan(SearchRequest req){
         List<Plan> ret = searchPlanUtil(req, 3);
-        System.out.println(ret.size());
+
         for(Plan p : ret)p.organize(req);
+        System.out.println(ret.size());
         return ret;
     }
 

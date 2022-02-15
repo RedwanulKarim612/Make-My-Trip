@@ -4,11 +4,11 @@ package com.MakeMyTrip;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -23,7 +23,6 @@ public class CustomerController {
     CityDAO cityDAO;
     @Autowired
     TripDAO tripDAO;
-
 
     @GetMapping("/user/profile")
     public ModelAndView getCustomerProfile(){
@@ -64,18 +63,31 @@ public class CustomerController {
         return modelAndView;
     }
 
-    @PostMapping(path = "/user/home", params = "action=search")
-    public ModelAndView handleSearch(SearchRequest searchRequest){
+    @RequestMapping(value = "/user/searchResults", method = RequestMethod.GET)
+    public ModelAndView getSearchResultsView(ArrayList<Plan>plans){
+        ModelAndView modelAndView = new ModelAndView("user-search-result");
+        modelAndView.addObject("plans",plans);
+        modelAndView.addObject("plan",new Plan());
+        return modelAndView;
+    }
+
+    @PostMapping(path = "/user/searchResult", params = "action=search")
+    public ModelAndView handleSearch(SearchRequest searchRequest, Model model){
         System.out.println(searchRequest);
-        List<Plan> plans = tripDAO.searchPlan(searchRequest);
+        ArrayList<Plan>plans = (ArrayList<Plan>) tripDAO.searchPlan(searchRequest);
         for(Plan plan: plans){
             System.out.println(plan);
         }
-        return new ModelAndView("redirect:/user/home");
+        //        modelAndView.addObject("plans", plans);
+        return getSearchResultsView(plans);
     }
 
-    @PostMapping(path = "/user/home/search", params = "viewPlan")
-    public ModelAndView handleBooking(){
+    @PostMapping(path = "/user/searchResults", params = "action=book")
+    public ModelAndView handleBooking(Plan plan, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            System.out.println("eeerrr");
+        }
+        System.out.println(plan);
         ModelAndView modelAndView = new ModelAndView("user-book");
         ArrayList<Traveller> travellers = new ArrayList<Traveller>(3);
         for (Traveller traveller: travellers){
@@ -84,4 +96,5 @@ public class CustomerController {
         modelAndView.addObject("travellers", travellers);
         return modelAndView;
     }
+
 }
