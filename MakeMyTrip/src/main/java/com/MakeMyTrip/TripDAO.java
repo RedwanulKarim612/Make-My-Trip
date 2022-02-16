@@ -143,6 +143,11 @@ public class TripDAO extends JdbcDaoSupport {
         return getJdbcTemplate().queryForObject(sql, String.class, loc);
     }
 
+    private Double getTimeZone(String loc){
+        String sql = "SELECT C.TIMEZONE FROM LOCATION L JOIN CITY C ON (L.CITY_ID = C.CITY_ID) WHERE L.LOCATION_ID = ?";
+        return (double)getJdbcTemplate().queryForObject(sql,Double.class,loc);
+    }
+
     private List<Plan> searchPlanUtil(SearchRequest req, int dep){
         if(req.getStartingCity().equals(req.getDestinationCity()))return new ArrayList<Plan>(Arrays.asList(new Plan()));
         System.out.println(req.getTravellingDate());
@@ -178,7 +183,11 @@ public class TripDAO extends JdbcDaoSupport {
     public List<Plan> searchPlan(SearchRequest req){
         List<Plan> ret = searchPlanUtil(req, 3);
 
-        for(Plan p : ret)p.organize(req);
+        for(Plan p : ret) {
+            p.setTotalDuration(((new Date((p.getTrips().get(0).getDate().getTime()+(long)(((p.getTrips().get(0).getDuration()*1.0-getTimeZone(p.getTrips().get(0).getDestination()))*1000.0*60*60))))).getTime()
+                                    -new Date(p.getTrips().get(p.getTrips().size()-1).getDate().getTime()-(long)(getTimeZone(p.getTrips().get(p.getTrips().size()-1).getStartFrom())*1000.0*60*60)).getTime())/(1000.0*60*60));
+            p.organize(req);
+        }
         System.out.println(ret.size());
         return ret;
     }
@@ -198,8 +207,8 @@ public class TripDAO extends JdbcDaoSupport {
                 "t.UPGRADE_PCT,\n" +
                 "t.DURATION,\n" +
                 "com.COMPANY_NAME AS COMPANY_NAME,\n" +
-                "t.START_TIME,\n" +
-                "t.START_TIME + (t.DURATION + c2.TIMEZONE -c1.TIMEZONE)/24 as finishTime\n" +
+                "TO_CHAR(t.START_TIME,'dd MON yyyy HH:MI AM') as START_TIME,\n" +
+                "TO_CHAR(t.START_TIME + (t.DURATION + c2.TIMEZONE -c1.TIMEZONE)/24, 'dd MON yyyy HH:MI AM') as finishTime\n" +
                 "\n" +
                 "FROM\n" +
                 "TRIP t\n" +

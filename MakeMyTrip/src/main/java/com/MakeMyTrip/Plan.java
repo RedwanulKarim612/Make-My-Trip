@@ -2,6 +2,7 @@ package com.MakeMyTrip;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 public class Plan {
@@ -9,6 +10,8 @@ public class Plan {
     private double price;
     private int requestedTickets;
     private int numberOfTrips;
+    private String type;
+    public double totalDuration;
     public Plan(List<Trip> trips) {
         this.trips = trips;
     }
@@ -55,15 +58,34 @@ public class Plan {
     public void setNumberOfTrips(int numberOfTrips) {
         this.numberOfTrips = numberOfTrips;
     }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public double getTotalDuration() {
+        return totalDuration;
+    }
+
+    public void setTotalDuration(double totalDuration) {
+        this.totalDuration = totalDuration;
+    }
+
     public void addTrip(Trip t){
         trips.add(t);
     }
+
 
     public void organize(SearchRequest req) {
         Collections.reverse(trips);
         numberOfTrips = trips.size();
         this.requestedTickets = req.getNumberOfTravellers();
         price = 0;
+        this.type = req.getType();
         boolean extra = (req.getType().equals("BUSINESS"));
         for (Trip t : trips){
             price += t.getBasePrice();
@@ -78,6 +100,8 @@ public class Plan {
                 ", price=" + price +
                 ", requestedTickets=" + requestedTickets +
                 ", numberOfTrips=" + numberOfTrips +
+                ", type='" + type + '\'' +
+                ", totalDuration=" + totalDuration +
                 '}';
     }
 }

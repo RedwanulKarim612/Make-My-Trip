@@ -35,11 +35,25 @@
 
 </div>
 
+<div  class="plan-info-div" style="margin-top: 5em">
+    <h3 style="text-align: center;margin-bottom: .5em ; margin-top: 3em">Information: </h3>
+    <h5 style="margin-left: 3em">Number of Passengers: <span th:text="${plan.getRequestedTickets()}"> </span></h5>
+    <h5 style="margin-left: 3em">Number of stops: <span th:text="${plan.getNumberOfTrips()}-1"> </span></h5>
+    <h5 style="margin-left: 3em">Total Cost: <span th:text="${plan.getRequestedTickets()}*${plan.getPrice()}"> </span></h5>
+    <h5 style="margin-left: 3em">From: <span th:text="${trips.get(0).get('CS')}"> </span></h5>
+    <h5 style="margin-left: 3em">To: <span th:text="${trips.get(trips.size()-1).get('CD')}"> </span></h5>
+</div>
+
+
+<div>
+    <h3>You will be paying for the following trips</h3>
+</div>
+
 <div class="grid-container" style="padding-top: 10em">
     <div class="book-trip-container-div" th:each="trip : ${trips}">
-        <h5 th:text="${trip.get('COMPANY_NAME')} + '-' + ${trip.get('VEHICLE_ID')}"> </h5> <br>
-        <h6 > <b><span th:text="${trip.get('START_TIME')} "></span><span th:text="${trip.get('CS')}"> </span> </b> <span th:text="${trip.get('SADD')}"> </span></h6>
-        <h6 > <b><span th:text="${trip.get('FINISHTIME')} "></span><span th:text="${trip.get('CD')}"> </span> </b> <span th:text="${trip.get('DADD')}"> </span></h6>
+        <h4 th:text="${trip.get('COMPANY_NAME')} + '-' + ${trip.get('VEHICLE_ID')}"> </h4> <br>
+        <h5 > <b><span th:text="${trip.get('START_TIME')} "></span><span th:text="' '+ ${trip.get('CS')}"> </span> </b> <span th:text="${trip.get('SADD')}"> </span></h5>
+        <h5 > <b><span th:text="${trip.get('FINISHTIME')} "></span><span th:text="' '+ ${trip.get('CD')}"> </span> </b> <span th:text="${trip.get('DADD')}"> </span></h5>
     </div>
 </div>
 
@@ -51,8 +65,8 @@
     <form  th:action="@{/user/searchResults/book}" th:object="${form}" method="post">
         <th:block th:each="trip,loop : ${trips}">
             <input type="hidden"  th:name="|tripIds[${loop.index}]|" th:value="${trip.get('TRIP_ID')}">
-
         </th:block>
+        <input type="hidden" th:name="type" th:value="${plan.getType()}">
         <fieldset>
             <div style="width: 80%; margin: 3em auto 1em auto">
                 <button style="display: block;  margin-left: auto;  margin-right: 0;"> <input type="reset" id="resetButton" name="reset" th:value="Reset" /></button>

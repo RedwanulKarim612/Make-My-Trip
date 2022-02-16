@@ -81,3 +81,12 @@ div.book-trip-container-div{
     padding: 1em 10em;
 
 }
+
+div.plan-info-div{
+    width: 60%;
+    margin: auto auto auto auto;
+    background: aliceblue;
+    border-radius: 10px;
+    border-color: blue;
+    border-style: solid;
+}

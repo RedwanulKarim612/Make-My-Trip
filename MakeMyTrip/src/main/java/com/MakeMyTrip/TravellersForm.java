@@ -6,6 +6,7 @@ import java.util.List;
 public class TravellersForm {
     private List<Traveller> travellers;
     private List<String> tripIds;
+    private String type;
 
     public TravellersForm() {
         travellers = new ArrayList<>();
@@ -50,5 +51,13 @@ public class TravellersForm {
 
     public void setTripIds(List<String> tripIds) {
         this.tripIds = tripIds;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }
