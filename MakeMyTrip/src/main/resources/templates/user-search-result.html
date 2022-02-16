@@ -50,7 +50,7 @@
             <td th:each="trip:${p.trips}" th:text="${trip.tripId}">
 
             <td>
-                <form th:action="@{'/user/searchResults'}" method="post" th:object="${plan}"  >
+                <form th:action="@{'/user/searchResults/book'}" method="post" th:object="${plan}"  >
                     <div class="form-group align-bottom" >
                         <th:block th:each="t, loop : ${p.trips}">
                             <input type="hidden"  th:name="|trips[${loop.index}].tripId|" th:value="${t.getTripId()}">

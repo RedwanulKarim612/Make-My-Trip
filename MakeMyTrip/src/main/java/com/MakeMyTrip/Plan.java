@@ -17,6 +17,13 @@ public class Plan {
         trips = new ArrayList<>();
     }
 
+    public Plan(List<Trip> trips, double price, int requestedTickets, int numberOfTrips) {
+        this.trips = trips;
+        this.price = price;
+        this.requestedTickets = requestedTickets;
+        this.numberOfTrips = numberOfTrips;
+    }
+
     public List<Trip> getTrips() {
         return trips;
     }

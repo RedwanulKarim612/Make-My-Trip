@@ -2,6 +2,7 @@ package com.MakeMyTrip;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.Banner;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.ui.Model;
@@ -14,6 +15,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class CustomerController {
@@ -71,30 +73,56 @@ public class CustomerController {
         return modelAndView;
     }
 
-    @PostMapping(path = "/user/searchResult", params = "action=search")
+    @PostMapping(path = "/user/searchResults", params = "action=search")
     public ModelAndView handleSearch(SearchRequest searchRequest, Model model){
         System.out.println(searchRequest);
         ArrayList<Plan>plans = (ArrayList<Plan>) tripDAO.searchPlan(searchRequest);
-        for(Plan plan: plans){
-            System.out.println(plan);
-        }
+//        for(Plan plan: plans){
+//            System.out.println(plan);
+//        }
         //        modelAndView.addObject("plans", plans);
         return getSearchResultsView(plans);
     }
 
-    @PostMapping(path = "/user/searchResults", params = "action=book")
+    @PostMapping(path = "/user/searchResults/book", params = "action=book")
     public ModelAndView handleBooking(Plan plan, BindingResult bindingResult){
         if(bindingResult.hasErrors()){
-            System.out.println("eeerrr");
+            for(Trip trip:plan.getTrips()){
+                trip.setDate(trip.getDate());
+            }
         }
-        System.out.println(plan);
+//        System.out.println(plan);
+//        ModelAndView modelAndView = new ModelAndView("user-book");
+//        ArrayList<Traveller> travellers = new ArrayList<Traveller>(3);
+//        for (Traveller traveller: travellers){
+//            traveller = new Traveller();
+//        }
+//        modelAndView.addObject("travellers", travellers);
+//        modelAndView.addObject("plan",plan);
+        return getBookingView(plan);
+    }
+
+    @RequestMapping(value = "/user/searchResults/book", method = RequestMethod.GET)
+    public ModelAndView getBookingView(Plan plan){
         ModelAndView modelAndView = new ModelAndView("user-book");
-        ArrayList<Traveller> travellers = new ArrayList<Traveller>(3);
-        for (Traveller traveller: travellers){
-            traveller = new Traveller();
-        }
-        modelAndView.addObject("travellers", travellers);
+        modelAndView.addObject("trips", tripDAO.getTripsInPlan(plan));
+        modelAndView.addObject("plan", plan);
+
+        System.out.println(plan);
+//        System.out.println("d" + plan.getRequestedTickets());
+        modelAndView.addObject("form", new TravellersForm(plan.getRequestedTickets(),plan.getNumberOfTrips()));
         return modelAndView;
     }
 
+    @PostMapping(path = "/user/searchResults/book", params = "action=confirm")
+    public ModelAndView confirmBooking(TravellersForm form,BindingResult bindingResult){
+//        for (Traveller traveller: form.getTravellers()){
+//            System.out.println(traveller.getName());
+//        }
+//        System.out.println("size " + form.getTripIds().size());
+//        for(String str: form.getTripIds()){
+//            System.out.println(str);
+//        }
+        return null;
+    }
 }

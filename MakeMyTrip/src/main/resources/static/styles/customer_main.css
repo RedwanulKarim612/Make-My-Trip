@@ -69,3 +69,15 @@ div.search-div{
 .form-group{
     margin-bottom: 10px;
 }
+
+div.book-trip-container-div{
+    grid-column-start: 1;
+    grid-column-end: 3;
+    margin: auto auto auto auto;
+    border-radius: 10px;
+    background: aliceblue;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    width: 80%;
+    padding: 1em 10em;
+
+}

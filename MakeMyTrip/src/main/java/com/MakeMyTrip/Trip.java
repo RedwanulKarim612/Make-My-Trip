@@ -10,7 +10,7 @@ public class Trip {
     private String tripId;
     private double basePrice;
     private double upgradePct;
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private Date date;
     private double duration;
     private String vehicleId;

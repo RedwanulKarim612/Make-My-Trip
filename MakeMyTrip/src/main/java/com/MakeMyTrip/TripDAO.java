@@ -3,6 +3,8 @@ package com.MakeMyTrip;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.stereotype.Repository;
 
@@ -10,6 +12,7 @@ import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 public class TripDAO extends JdbcDaoSupport {
@@ -180,4 +183,37 @@ public class TripDAO extends JdbcDaoSupport {
         return ret;
     }
 
+    public List<Map<String,Object>> getTripsInPlan(Plan plan) {
+
+        String sql = "SELECT\n" +
+                "t.TRIP_ID,\n" +
+                "l1.LOCATION_ID AS SID,\n" +
+                "l1.address AS SADD,\n" +
+                "l2.location_id AS DID,\n" +
+                "l2.address AS DADD,\n" +
+                "c1.city_name AS CS,\n" +
+                "c2.city_name AS CD,\n" +
+                "t.VEHICLE_ID,\n" +
+                "t.BASE_PRICE,\n" +
+                "t.UPGRADE_PCT,\n" +
+                "t.DURATION,\n" +
+                "com.COMPANY_NAME AS COMPANY_NAME,\n" +
+                "t.START_TIME,\n" +
+                "t.START_TIME + (t.DURATION + c2.TIMEZONE -c1.TIMEZONE)/24 as finishTime\n" +
+                "\n" +
+                "FROM\n" +
+                "TRIP t\n" +
+                "JOIN location l1 ON ( t.start_from = l1.location_id )\n" +
+                "JOIN location l2 ON ( t.destination = l2.location_id )\n" +
+                "JOIN city c1 ON ( l1.city_id = c1.city_id ) join city c2 ON ( l2.city_id = c2.city_id )\n" +
+                "JOIN vehicle v ON ( t.vehicle_id = v.vehicle_id )\n" +
+                "JOIN company com ON ( v.company_id = com.company_id ) \n" +
+                "WHERE\n" +
+                "t.TRIP_ID =? ";
+        List<Map<String,Object>> mp = new ArrayList<>();
+        for (Trip trip: plan.getTrips()){
+            mp.add(getJdbcTemplate().queryForMap(sql,trip.getTripId()));
+        }
+        return mp;
+    }
 }

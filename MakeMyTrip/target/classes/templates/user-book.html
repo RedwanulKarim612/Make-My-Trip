@@ -35,29 +35,50 @@
 
 </div>
 
+<div class="grid-container" style="padding-top: 10em">
+    <div class="book-trip-container-div" th:each="trip : ${trips}">
+        <h5 th:text="${trip.get('COMPANY_NAME')} + '-' + ${trip.get('VEHICLE_ID')}"> </h5> <br>
+        <h6 > <b><span th:text="${trip.get('START_TIME')} "></span><span th:text="${trip.get('CS')}"> </span> </b> <span th:text="${trip.get('SADD')}"> </span></h6>
+        <h6 > <b><span th:text="${trip.get('FINISHTIME')} "></span><span th:text="${trip.get('CD')}"> </span> </b> <span th:text="${trip.get('DADD')}"> </span></h6>
+    </div>
+</div>
+
+<div >
+    <h3 style="text-align: center;margin-bottom: .5em ; margin-top: 3em"> <b>Fill Up Travellers' Information: <b></h3>
+</div>
+
 <div>
-    <form action="#" th:action="@{/user/search/book}" th:object="${travellers}"
-          method="post">
+    <form  th:action="@{/user/searchResults/book}" th:object="${form}" method="post">
+        <th:block th:each="trip,loop : ${trips}">
+            <input type="hidden"  th:name="|tripIds[${loop.index}]|" th:value="${trip.get('TRIP_ID')}">
+
+        </th:block>
         <fieldset>
-            <input type="submit" id="submitButton" th:value="Save">
-            <input type="reset" id="resetButton" name="reset" th:value="Reset"/>
-            <table>
+            <div style="width: 80%; margin: 3em auto 1em auto">
+                <button style="display: block;  margin-left: auto;  margin-right: 0;"> <input type="reset" id="resetButton" name="reset" th:value="Reset" /></button>
+            </div>
+
+            <table class="table table-light table-striped" style="width: 80%; margin: 0 auto 1em auto">
                 <thead>
                 <tr>
-                    <th> Name</th>
-                    <th> Type</th>
-                    <th> Id no</th>
+                    <th scope="col" th:width="20"><b> Name </b></th>
+                    <th scope="col" th:width="30"><b> Type </b> </th>
+                    <th scope="col" th:width="30"><b> Id No </b> </th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="traveller, itemStat : ${travellers}">
-                    <td><input th:field="${travellers[__${itemStat.index}__].name}" /></td>
-                    <td><input th:field="${travellers[__${itemStat.index}__].identificationType}" /></td>
-                    <td><input th:field="${travellers[__${itemStat.index}__].identificationNo}" /></td>
+                <tr th:each="traveller, loop : *{travellers}">
+                    <td><input th:field="*{travellers[__${loop.index}__].name}" size="50" /></td>
+                    <td><input th:field="*{travellers[__${loop.index}__].identificationType}" size="50" /></td>
+                    <td><input th:field="*{travellers[__${loop.index}__].identificationNo}" size="50"/></td>
                 </tr>
                 </tbody>
             </table>
         </fieldset>
+
+        <div class="form-group align-bottom" style="margin-top: 2em; display: flex">
+            <button type="submit" name="action" value = "confirm" class="btn btn-lg btn-primary" style="margin: auto auto auto auto; width: 30%">Confirm And Pay</button>
+        </div>
     </form>
 </div>
 
