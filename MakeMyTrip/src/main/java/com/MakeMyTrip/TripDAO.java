@@ -193,7 +193,14 @@ public class TripDAO extends JdbcDaoSupport {
     }
 
     public List<Map<String,Object>> getTripsInPlan(Plan plan) {
+        List<String> ids = new ArrayList<>();
+        for(Trip trip: plan.getTrips()){
+            ids.add(trip.getTripId());
+        }
+        return getTripsInList(ids);
+    }
 
+    public List<Map<String, Object>> getTripsInList(List<String> tripIds) {
         String sql = "SELECT\n" +
                 "t.TRIP_ID,\n" +
                 "l1.LOCATION_ID AS SID,\n" +
@@ -220,8 +227,8 @@ public class TripDAO extends JdbcDaoSupport {
                 "WHERE\n" +
                 "t.TRIP_ID =? ";
         List<Map<String,Object>> mp = new ArrayList<>();
-        for (Trip trip: plan.getTrips()){
-            mp.add(getJdbcTemplate().queryForMap(sql,trip.getTripId()));
+        for (String id: tripIds){
+            mp.add(getJdbcTemplate().queryForMap(sql,id));
         }
         return mp;
     }

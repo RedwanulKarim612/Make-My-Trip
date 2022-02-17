@@ -3,6 +3,10 @@ package com.MakeMyTrip;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.ui.Model;
@@ -13,6 +17,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -115,7 +120,7 @@ public class CustomerController {
     }
 
     @PostMapping(path = "/user/searchResults/book", params = "action=confirm")
-    public ModelAndView confirmBooking(TravellersForm form,BindingResult bindingResult){
+    public ResponseEntity<InputStreamResource> confirmBooking(TravellersForm form, BindingResult bindingResult, HttpServletResponse response){
 //        for (Traveller traveller: form.getTravellers()){
 //            System.out.println(traveller.getName());
 //        }
@@ -123,6 +128,16 @@ public class CustomerController {
 //        for(String str: form.getTripIds()){
 //            System.out.println(str);
 //        }
-        return null;
+        ByteArrayInputStream bis = PDFGenerator.generateTicket(form, tripDAO.getTripsInList(form.getTripIds()));
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "inline; filename=ticket.pdf");
+
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(new InputStreamResource(bis));
     }
+
 }
