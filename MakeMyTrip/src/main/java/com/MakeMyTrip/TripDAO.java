@@ -1,15 +1,22 @@
 package com.MakeMyTrip;
 
+import com.fasterxml.jackson.core.JsonToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -231,5 +238,57 @@ public class TripDAO extends JdbcDaoSupport {
             mp.add(getJdbcTemplate().queryForMap(sql,id));
         }
         return mp;
+    }
+
+    public boolean bookTickets(TravellersForm form){
+        String buyer = SecurityContextHolder.getContext().getAuthentication().getName();
+        int numTicket = form.getTravellers().size();
+        if(numTicket == 0)return true;
+        double costOfEachTicket = 0;
+        List<List<String>> all = new ArrayList<>();
+        String sql;
+        for(String t_id : form.getTripIds()){
+            sql = "SELECT TICKET_ID FROM TICKET WHERE TRIP_ID = ? AND TYPE = ? AND BOUGHT_BY IS NULL AND ROWNUM <= ?";
+            List<String> tickets = new ArrayList<>();
+            List<Map<String, Object>> m = getJdbcTemplate().queryForList(sql, t_id, form.getType(), numTicket);
+            for(Map<String, Object> tt : m)tickets.add(tt.get("TICKET_ID").toString());
+            if(tickets.size() != numTicket)return false;
+            all.add(tickets);
+            sql = "SELECT PRICE FROM TICKET WHERE TRIP_ID = ? AND TYPE = ? AND BOUGHT_BY IS NULL AND ROWNUM <= 1";
+            costOfEachTicket += getJdbcTemplate().queryForObject(sql, Double.class, t_id, form.getType());
+        }
+        sql = "SELECT AMOUNT FROM WALLET WHERE CUSTOMER_ID = ?";
+        Double balance = getJdbcTemplate().queryForObject(sql, Double.class, buyer);
+        if(balance < costOfEachTicket * numTicket){
+            return false;
+        }
+        int id = 0;
+        String Insert_sql = "INSERT INTO TRAVELLER(NAME, IDENTYFICATION_TYPE, IDENTIFICATION_NO) " +
+                "VALUES(?, ?, ?)";
+        for(Traveller tr : form.getTravellers()){
+            KeyHolder keyholder = new GeneratedKeyHolder();
+            getJdbcTemplate().update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(Insert_sql, new String[] {"TRAVELLER_ID"});
+                ps.setString(1, tr.getName());
+                ps.setString(2, tr.getIdentificationType());
+                ps.setString(3, tr.getIdentificationNo());
+                return ps;
+            }, keyholder);
+            Map<String, Object> key = keyholder.getKeys();
+            tr.setTravellerId(key.get("TRAVELLER_ID").toString());
+        }
+        for(String t_id : form.getTripIds()){
+            List<String> tkt = all.get(id++);
+            sql = "UPDATE TICKET SET " +
+                    "TRAVELLER_ID = ?, " +
+                    "BOUGHT_BY = ? " +
+                    "WHERE TICKET_ID = ?";
+            for(int i = 0; i < numTicket; i++)
+                getJdbcTemplate().update(sql, form.getTravellers().get(i).getTravellerId(), buyer, tkt.get(i));
+        }
+
+        sql = "UPDATE WALLET SET AMOUNT = ? WHERE CUSTOMER_ID = ?";
+        getJdbcTemplate().update(sql, balance - numTicket * costOfEachTicket, buyer);
+        return true;
     }
 }

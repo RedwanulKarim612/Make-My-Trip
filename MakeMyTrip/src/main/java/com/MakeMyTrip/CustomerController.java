@@ -128,6 +128,7 @@ public class CustomerController {
 //        for(String str: form.getTripIds()){
 //            System.out.println(str);
 //        }
+//       tripDAO.bookTickets(form);
         ByteArrayInputStream bis = PDFGenerator.generateTicket(form, tripDAO.getTripsInList(form.getTripIds()));
 
         HttpHeaders headers = new HttpHeaders();

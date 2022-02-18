@@ -33,7 +33,6 @@ public class TransactionController {
             return null;
         }
     }
-
     @PostMapping(path = "/admin/transactions/add", params = "action=add")
     public ModelAndView addTransaction(@ModelAttribute ("transaction") Transaction transaction){
         try{
