@@ -1,0 +1,80 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Make My Trip admin</title>
+    <link th:href="@{/styles/customer_main.css}" type="text/css" href="" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link href="https://getbootstrap.com/docs/4.0/examples/signin/signin.css" rel="stylesheet" crossorigin="anonymous">
+</head>
+<body>
+
+<div>
+    <div>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+            <div class="container-fluid">
+                <a href="#" class="navbar-brand" style="font-family: 'Lucida Handwriting' ; margin-left: 2em"> Make My Trip</a>
+
+                <ul class="navbar-nav rs-auto">
+                    <li class="nav-item current"><a class="nav-link" href="/user/home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/user/profile">Profile</a></li>
+                </ul>
+
+                <form th:action="@{'/user/profile'}" method="post" >
+                    <div class="form-group align-bottom" >
+                        <button type="submit" name="action" value = "logout" class="btn btn-danger" style="margin-top: 1em;height: auto; margin-right: 2em" >logout</button>
+                    </div>
+                </form>
+
+            </div>
+        </nav>
+
+    </div>
+
+</div>
+
+<div style="padding-top: 10em">
+    <table class="table table-dark table-striped sortable" style="width: 90%; margin: 1em auto 1em auto">
+
+        <thead style="text-align: center; vertical-align: middle">
+        <tr >
+            <th scope="col" th:width="18"><b> Offered By</b></th>
+            <th scope="col" th:width="18"><b> Stops</b></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="p : ${plans}" >
+            <td scope="row" th:text="${p.getNumberOfTrips()}"></td>
+            <td th:each="trip:${p.trips}" th:text="${trip.tripId}">
+
+            <td>
+                <form th:action="@{'/user/searchResults/book'}" method="post" th:object="${plan}"  >
+                    <div class="form-group align-bottom" >
+                        <th:block th:each="t, loop : ${p.trips}">
+                            <input type="hidden"  th:name="|trips[${loop.index}].tripId|" th:value="${t.getTripId()}">
+                            <input type="hidden"  th:name="|trips[${loop.index}].basePrice|"  th:value="${t.basePrice}">
+                            <input type="hidden"  th:name="|trips[${loop.index}].upgradePct|" th:value="${t.upgradePct}">
+                            <input type="hidden"  th:name="|trips[${loop.index}].date|"  th:value="${t.getDate()}">
+                            <input type="hidden"  th:name="|trips[${loop.index}].duration|"  th:value="${t.duration}">
+                            <input type="hidden"  th:name="|trips[${loop.index}].vehicleId|"  th:value="${t.vehicleId}">
+                            <input type="hidden"  th:name="|trips[${loop.index}].startFrom|"  th:value="${t.startFrom}">
+                            <input type="hidden"  th:name="|trips[${loop.index}].destination|" th:value="${t.destination}">
+                        </th:block>
+                        <input type="hidden" th:value="${p.price}" name="price">
+                        <input type="hidden" th:value="${p.requestedTickets}" name="requestedTickets">
+                        <input type="hidden" th:value="${p.numberOfTrips}" name="numberOfTrips">
+                        <input type="hidden" th:value="${p.type}" name="type">
+                        <input type="hidden" th:value="${p.totalDuration}" name="totalDuration">
+                        <button type="submit" name="action" value = "book" class="btn btn-danger" style="margin-top: 1em;height: auto; margin-right: 2em" >Book Now</button>
+                    </div>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>
