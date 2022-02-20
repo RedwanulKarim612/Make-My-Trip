@@ -91,6 +91,7 @@ public class Plan {
             price += t.getBasePrice();
             if(extra)price += t.getBasePrice() * t.getUpgradePct() / 100.0;
         }
+
     }
 
     @Override

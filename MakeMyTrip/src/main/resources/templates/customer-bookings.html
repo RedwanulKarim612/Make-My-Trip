@@ -1,0 +1,74 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Make My Trip admin</title>
+    <link th:href="@{/styles/customer_main.css}" type="text/css" href="" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link href="https://getbootstrap.com/docs/4.0/examples/signin/signin.css" rel="stylesheet" crossorigin="anonymous">
+</head>
+<body>
+
+<div>
+    <div>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+            <div class="container-fluid">
+                <a href="#" class="navbar-brand" style="font-family: 'Lucida Handwriting' ; margin-left: 2em"> Make My Trip</a>
+
+                <ul class="navbar-nav rs-auto">
+                    <li class="nav-item current"><a class="nav-link" href="/user/home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/user/profile">Profile</a></li>
+                </ul>
+
+                <form th:action="@{'/user/profile'}" method="post" >
+                    <div class="form-group align-bottom" >
+                        <button type="submit" name="action" value = "logout" class="btn btn-danger" style="margin-top: 1em;height: auto; margin-right: 2em" >logout</button>
+                    </div>
+                </form>
+
+            </div>
+        </nav>
+
+    </div>
+
+    <div style="padding-top: 10em">
+        <div >
+            <table class="table table-dark table-striped sortable" style="width: 80%; margin: 1em auto 1em auto">
+
+                <thead style="text-align: center; vertical-align: middle">
+                <!--            edit-->
+                <tr >
+                    <th scope="col" th:width="12"><b> ID </b></th>
+                    <th scope="col" th:width="13"><b> Vehicle </b></th>
+                    <th scope="col" th:width="7"><b> From </b> </th>
+                    <th scope="col" th:width="7"><b> To </b> </th>
+                    <th scope="col" th:width="20"><b> Starts at </b> </th>
+                    <th scope="col" th:width="7"><b> Duration </b> </th>
+                    <th scope="col" th:width="7"><b> Passengers </b> </th>
+                    <th scope="col" th:width="7"> </th>
+                </tr>
+                </thead>
+                <tbody>
+                <!--            edit-->
+                <tr th:each="trip : ${trips}" style="text-align: center; vertical-align: middle" >
+                    <td scope="row" th:text="${trip.get('TRIP_ID')}"></td>
+                    <td scope="row" th:text="${trip.get('VEHICLE_ID')} +'(' + ${trip.get('COMPANY_NAME')} + ')'"></td>
+                    <td scope="row" th:text="${trip.get('SC')}"></td>
+                    <td scope="row" th:text="${trip.get('DC')}"></td>
+                    <td scope="row" th:text="${trip.get('START_TIME')}"></td>
+                    <td scope="row" th:text="${trip.get('DURATION')}"></td>
+                    <td scope="row" th:text="${trip.get('CNT')}"></td>
+                    <td>
+                        <a th:href="@{'/user/bookings/' + ${trip.get('TRIP_ID')}}">view</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

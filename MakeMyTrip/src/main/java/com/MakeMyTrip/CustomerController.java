@@ -71,10 +71,15 @@ public class CustomerController {
     }
 
     @RequestMapping(value = "/user/searchResults", method = RequestMethod.GET)
-    public ModelAndView getSearchResultsView(ArrayList<Plan>plans){
+    public ModelAndView getSearchResultsView(ArrayList<Plan>plans, SearchRequest searchRequest){
         ModelAndView modelAndView = new ModelAndView("user-search-result");
         modelAndView.addObject("plans",plans);
         modelAndView.addObject("plan",new Plan());
+        modelAndView.addObject("searchRequest", searchRequest);
+        var cities = cityDAO.getAllCitiesWithCountry();
+        modelAndView.addObject("startFrom", cities);
+        modelAndView.addObject("destination", cities);
+        modelAndView.addObject("planInfo", tripDAO.getPlansBriefInfo(plans));
         return modelAndView;
     }
 
@@ -86,7 +91,7 @@ public class CustomerController {
 //            System.out.println(plan);
 //        }
         //        modelAndView.addObject("plans", plans);
-        return getSearchResultsView(plans);
+        return getSearchResultsView(plans,searchRequest);
     }
 
     @PostMapping(path = "/user/searchResults/book", params = "action=book")
@@ -128,7 +133,7 @@ public class CustomerController {
 //        for(String str: form.getTripIds()){
 //            System.out.println(str);
 //        }
-//       tripDAO.bookTickets(form);
+       tripDAO.bookTickets(form);
         ByteArrayInputStream bis = PDFGenerator.generateTicket(form, tripDAO.getTripsInList(form.getTripIds()));
 
         HttpHeaders headers = new HttpHeaders();

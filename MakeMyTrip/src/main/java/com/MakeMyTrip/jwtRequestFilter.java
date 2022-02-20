@@ -27,22 +27,24 @@ public class jwtRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String header = null;
 
-        for (Cookie cookie : request.getCookies()) {
-            if(cookie.getName().equals("jwt")) header = cookie.getValue();
-        }
         String username = null;
         String jwt = null;
-        if(header!=null && header.startsWith("Bearer")){
-            jwt = header.substring(6);
-            try {
-                username = jwtUtil.getUsernameFromToken(jwt);
-                UserDetails details = customerUserDetailsService.loadUserByUsername(username);
+        if(request.getCookies()!=null) {
+            for (Cookie cookie : request.getCookies()) {
+                if (cookie.getName().equals("jwt")) header = cookie.getValue();
+            }
+            if (header != null && header.startsWith("Bearer")) {
+                jwt = header.substring(6);
+                try {
+                    username = jwtUtil.getUsernameFromToken(jwt);
+                    UserDetails details = customerUserDetailsService.loadUserByUsername(username);
 //                System.out.println(details);
 //                response.addHeader("jwt", jwtUtil.generateToken(details));
-            } catch (IllegalArgumentException e) {
-                System.out.println("Unable to get JWT Token");
-            } catch (ExpiredJwtException e) {
-                System.out.println("JWT Token has expired");
+                } catch (IllegalArgumentException e) {
+                    System.out.println("Unable to get JWT Token");
+                } catch (ExpiredJwtException e) {
+                    System.out.println("JWT Token has expired");
+                }
             }
         }
 
