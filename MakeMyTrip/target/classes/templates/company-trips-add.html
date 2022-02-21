@@ -38,7 +38,7 @@
         <h3>Add New Vehicle</h3>
     </div>
     <div style="vertical-align: center">
-        <form th:action="@{/company/trips/add}" method="post" th:object="${trip}" >
+        <form th:action="@{/company/trips/add}" method="post" th:object="${request}" >
             <div class = "form-inline" style="width: 60%; margin: 1em auto 1em auto">
                 <!--                <div class="form-group mb-3">-->
                 <!--                    <label class="form-label" for="cityId"> City Id: </label>-->
@@ -86,6 +86,12 @@
                         <option th:each="vehicle : ${vehicles}" th:value="${vehicle.get('VEHICLE_ID')}" th:text="${vehicle.get('VEHICLE_ID')} "></option>
                     </select>
                 </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="numberOfTrips"> Add Trips for number of days: </label>
+                    <input class = "form-control" type="number" id="numberOfTrips" th:field="*{numberOfTrips}" size="50" min="1" max="30">
+                </div>
+
 
 
 

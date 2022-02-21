@@ -212,8 +212,8 @@ public class TripDAO extends JdbcDaoSupport {
         for(Plan p : ret) {
 //            System.out.println(p.getTrips().get(0).getStartFrom());
 //            System.out.println("ddd " + new Date((p.getTrips().get(0).getDate().getTime()+(long)(((p.getTrips().get(0).getDuration()*1.0-getTimeZone(p.getTrips().get(0).getStartFrom()))*1000.0*60*60)))));
-//            p.setTotalDuration(((new Date((p.getTrips().get(0).getDate().getTime()+(long)(((p.getTrips().get(0).getDuration()*1.0-getTimeZone(p.getTrips().get(0).getStartFrom()))*1000.0*60*60))))).getTime()
-//                                    -new Date(p.getTrips().get(p.getTrips().size()-1).getDate().getTime()-(long)(1.0*getTimeZone(p.getTrips().get(p.getTrips().size()-1).getStartFrom())*1000.0*60*60)).getTime())/(1000.0*60*60));
+            p.setTotalDuration(((new Date((p.getTrips().get(0).getDate().getTime()+(long)(((p.getTrips().get(0).getDuration()*1.0-getTimeZone(p.getTrips().get(0).getStartFrom()))*1000.0*60*60))))).getTime()
+                                    -new Date(p.getTrips().get(p.getTrips().size()-1).getDate().getTime()-(long)(1.0*getTimeZone(p.getTrips().get(p.getTrips().size()-1).getStartFrom())*1000.0*60*60)).getTime())/(1000.0*60*60));
             p.organize(req);
         }
         if(req.getOrder().equalsIgnoreCase("PRICE")){
@@ -349,5 +349,11 @@ public class TripDAO extends JdbcDaoSupport {
             mpList.add(getPlanInfo(p));
         }
         return mpList;
+    }
+
+    public void addTripForDays(TripAddRequest request) {
+        System.out.println(request);
+        String sql = "CALL add_trips_for_multiple_days(?,?,?,?,?,?,?,?)";
+        getJdbcTemplate().update(sql,request.getBasePrice(),request.getUpgradePct(),request.getDate(),request.getDuration(),request.getStartFrom(),request.getDestination(),request.getVehicleId(),request.getNumberOfTrips());
     }
 }

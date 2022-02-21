@@ -63,6 +63,22 @@
                     <label class="custom-control-label" for="option2">Business Class</label>
                 </div>
             </div>
+            <div class="form-group">
+                <label>Sort Results By: </label>
+                <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" id="price" name="option1" class="custom-control-input" value="PRICE" th:field="*{order}">
+                    <label class="custom-control-label" for="option1">Price</label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" id="duration" name="option2" class="custom-control-input" value="DURATION" th:field="*{order}">
+                    <label class="custom-control-label" for="option2">Duration</label>
+                </div>
+
+                <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" id="numberOfTrips" name="option2" class="custom-control-input" value="NO_OF_TRIPS" th:field="*{order}">
+                    <label class="custom-control-label" for="option2">Number of Stops</label>
+                </div>
+            </div>
 
             <div class="form-group align-bottom" style="margin-top: 2em; display: flex">
                 <button type="submit" name="action" value = "search" class="btn btn-lg btn-primary" style="margin-right: .5em; width: 50%">Search</button>
@@ -71,7 +87,11 @@
     </form>
 </div>
 
-<div style="padding-top: 10em">
+<div>
+    <h3 style="text-align: center;margin-bottom: .5em; padding-top: 3em">Search Results</h3>
+</div>
+
+<div style="padding-top: 3em; margin-bottom: 10em">
     <table class="table table-dark table-striped sortable" style="width: 90%; margin: 1em auto 1em auto">
 
         <thead style="text-align: center; vertical-align: middle">
@@ -81,10 +101,13 @@
             <th scope="col" th:width="18"><b> Starts At</b></th>
             <th scope="col" th:width="7"><b> Duration</b></th>
             <th scope="col" th:width="18"><b> Reaches At</b></th>
-            <th scope="col" th:width="11"></th>
+            <th scope="col" th:width="11"><b> Price </b></th>
+            <th scope="col" th:width="7"></th>
         </tr>
         </thead>
         <tbody>
+
+
         <tr th:each="p,pStat : ${plans}" style="text-align: center; vertical-align: middle">
             <td scope="row" th:text="${planInfo[pStat.index].get('SADD') + ' ' + planInfo[pStat.index].get('CS')}"></td>
             <td scope="row" th:text="${planInfo[pStat.index].get('DADD')+ ' ' + planInfo[pStat.index].get('CD')}"></td>
@@ -93,7 +116,10 @@
                 <pre th:text="${p.getTotalDuration()}"></pre>
                 <pre th:text="${p.getNumberOfTrips()}"></pre>
             </td>
+
             <td scope="row" th:text="${planInfo[pStat.index].get('FINISH_TIME')}"></td>
+            <td scope="row" th:text="${p.getPrice()}"></td>
+
 
             <td>
                 <form th:action="@{'/user/searchResults/book'}" method="post" th:object="${plan}"  >

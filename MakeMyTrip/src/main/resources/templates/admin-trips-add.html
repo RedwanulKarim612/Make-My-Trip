@@ -39,7 +39,7 @@
         <h3>Add New City</h3>
     </div>
     <div style="vertical-align: center">
-        <form th:action="@{/admin/trips/add}" method="post" th:object="${trip}" >
+        <form th:action="@{/admin/trips/add}" method="post" th:object="${request}" >
             <div class = "form-inline" style="width: 60%; margin: 1em auto 1em auto">
                 <!--                <div class="form-group mb-3">-->
                 <!--                    <label class="form-label" for="cityId"> City Id: </label>-->
@@ -84,6 +84,12 @@
                     <label class="form-label" for="vehicleId"> vehicleId: </label>
                     <input class = "form-control" type="text" id="vehicleId" th:field="*{vehicleId}" size="50" >
                 </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="numberOfTrips"> Add Trips for number of days: </label>
+                    <input class = "form-control" type="number" id="numberOfTrips" th:field="*{numberOfTrips}" size="50" min="1" max="30">
+                </div>
+
 
                 <div class="form-group align-bottom" style="margin-top: 2em; display: flex">
                     <button type="submit" name="action" value = "add" class="btn btn-lg btn-primary" style="margin-right: .5em; width: 50%">Add</button>

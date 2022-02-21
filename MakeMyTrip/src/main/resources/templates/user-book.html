@@ -28,10 +28,10 @@
 
 
 <div>
-    <h3>You will be paying for the following trips</h3>
+    <h3 style="text-align: center;margin-bottom: .5em; padding-top: 3em">You will be paying for the following trips</h3>
 </div>
 
-<div class="grid-container" style="padding-top: 10em">
+<div class="grid-container" style="padding-top: 3em">
     <div class="book-trip-container-div" th:each="trip : ${trips}">
         <h4 th:text="${trip.get('COMPANY_NAME')} + '-' + ${trip.get('VEHICLE_ID')}"> </h4> <br>
         <h5 > <b><span th:text="${trip.get('START_TIME')} "></span><span th:text="' '+ ${trip.get('CS')}"> </span> </b> <span th:text="${trip.get('SADD')}"> </span></h5>

@@ -98,12 +98,12 @@ public class TripController {
     }
 
     @GetMapping({"admin/trips/add","/company/trips/add"})
-    public ModelAndView getAddCityView(){
+    public ModelAndView getAddTripView(){
         ModelAndView modelAndView = new ModelAndView();
         if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
                 .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"))) modelAndView.setViewName("admin-trips-add");
         else modelAndView.setViewName("company-trips-add");
-        modelAndView.addObject("trip", new Trip());
+        modelAndView.addObject("request", new TripAddRequest());
         var locations = locationDAO.getAllLocations();
         modelAndView.addObject("startFrom" , locations);
         modelAndView.addObject("destination" , locations);
@@ -112,11 +112,11 @@ public class TripController {
     }
 
     @PostMapping(path = {"admin/trips/add","/company/trips/add"})
-    public ModelAndView addTrip(Trip trip){
-        System.out.println(trip);
+    public ModelAndView addTrip(TripAddRequest request){
+//        System.out.println(trip);
 
         try{
-            tripDAO.addTrip(trip);
+            tripDAO.addTripForDays(request);
         }
         catch (DataIntegrityViolationException e){
 

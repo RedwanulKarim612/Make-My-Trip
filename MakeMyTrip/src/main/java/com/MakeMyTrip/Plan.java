@@ -91,10 +91,10 @@ public class Plan {
             price += t.getBasePrice();
             if(extra)price += t.getBasePrice() * t.getUpgradePct() / 100.0;
         }
-	if(numberOfTrips == 0) totalDuration = 0;
-	else{
-		totalDuration = (double)(trips.get(numberOfTrips - 1).getDate().getTime() - trips.get(0).getDate().getTime()) / 3600.0 + trips.get(numberOfTrips - 1).getDuration();
-	}
+//	if(numberOfTrips == 0) totalDuration = 0;
+//	else{
+//		totalDuration = (double)(trips.get(numberOfTrips - 1).getDate().getTime() - trips.get(0).getDate().getTime()) / 3600000.0 + trips.get(numberOfTrips - 1).getDuration();
+//	}
     }
 
     @Override
