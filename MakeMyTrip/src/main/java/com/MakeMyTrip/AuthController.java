@@ -7,6 +7,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -137,4 +138,24 @@ public class AuthController {
         createAuthenticationToken(request,response);
         return new ModelAndView("redirect:/user/home");
     }
+
+//    @PostMapping(path = "/user/profile/edit", params = "action=save")
+//    public @ResponseBody  ModelAndView customerProfileEdited(Customer customer, HttpServletResponse response){
+//        System.out.println(customer.getUserId() + " " + SecurityContextHolder.getContext().getAuthentication().getName());
+//        ModelAndView modelAndView = new ModelAndView("customer-profile");
+//        customerDAO.editProfile(customer, SecurityContextHolder.getContext().getAuthentication().getName());
+//        Cookie cookie = new Cookie("jwt", "Bearer" );
+//
+//        cookie.setHttpOnly(true);
+//        cookie.setSecure(true);
+//        cookie.setPath("");
+//        cookie.setDomain("");
+//        final UserDetails userDetails = customerUserDetailsService
+//                .loadUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+//        final String jwt = jwtUtil.generateToken(userDetails);
+//        cookie.setValue("Bearer" + jwt);
+//        response.addCookie(cookie);
+//
+//        return modelAndView;
+//    }
 }

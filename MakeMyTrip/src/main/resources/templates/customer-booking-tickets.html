@@ -12,26 +12,8 @@
 <body>
 
 <div>
-    <div>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
-            <div class="container-fluid">
-                <a href="#" class="navbar-brand" style="font-family: 'Lucida Handwriting' ; margin-left: 2em"> Make My Trip</a>
+    <div class="nav-div" style="padding-bottom: 3em" th:insert="home :: customer-navbar"> </div>
 
-                <ul class="navbar-nav rs-auto">
-                    <li class="nav-item current"><a class="nav-link" href="/user/home">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/user/profile">Profile</a></li>
-                </ul>
-
-                <form th:action="@{'/user/profile'}" method="post" >
-                    <div class="form-group align-bottom" >
-                        <button type="submit" name="action" value = "logout" class="btn btn-danger" style="margin-top: 1em;height: auto; margin-right: 2em" >logout</button>
-                    </div>
-                </form>
-
-            </div>
-        </nav>
-
-    </div>
     <div style="width: 60%;padding-top: 5em; margin-left: auto; margin-right: auto">
         <h5> <b>Trip Id :</b>  <span th:text="${trip.get('TRIP_ID')}"></span> </h5>
         <h5> <b>Starts From :</b>  <span th:text="${trip.get('SADD')} + ',' + ${trip.get('CS')}"></span> </h5>

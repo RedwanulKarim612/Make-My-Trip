@@ -12,27 +12,63 @@
 <body>
 
 <div>
-    <div>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
-            <div class="container-fluid">
-                <a href="#" class="navbar-brand" style="font-family: 'Lucida Handwriting' ; margin-left: 2em"> Make My Trip</a>
+    <div class="nav-div" style="padding-bottom: 3em" th:insert="home :: customer-navbar"> </div>
 
-                <ul class="navbar-nav rs-auto">
-                    <li class="nav-item current"><a class="nav-link" href="/user/home">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/user/profile">Profile</a></li>
-                </ul>
 
-                <form th:action="@{'/user/profile'}" method="post" >
-                    <div class="form-group align-bottom" >
-                        <button type="submit" name="action" value = "logout" class="btn btn-danger" style="margin-top: 1em;height: auto; margin-right: 2em" >logout</button>
-                    </div>
-                </form>
+</div>
 
+
+<div class = "search-div">
+    <form th:action="@{'/user/searchResults'}" method="post" th:object="${searchRequest}">
+        <div class = "form-inline" style="width: 60%; margin: 1em auto 1em auto">
+            <!--                <div class="form-group mb-3">-->
+            <!--                    <label class="form-label" for="cityId"> City Id: </label>-->
+            <!--                    <input class = "form-control" type="text" id="cityId" th:field="*{cityId}"  size="50" >-->
+            <!--                </div>-->
+            <div class="form-group">
+                <label class="form-label" for="startingCity"> Start from: </label>
+                <select class = "form-control" type="text" id="startingCity" th:field="*{startingCity}">
+                    <option value="0">Select Starting City</option>
+                    <option th:each="city : ${startFrom}" th:value="${city.get('CITY_ID')}" th:text="${city.get('CITY_NAME')} + '(' + ${city.get('COUNTRY_NAME')} + ')'" ></option>
+                </select>
             </div>
-        </nav>
 
-    </div>
+            <div class="form-group">
+                <label class="form-label" for="destinationCity"> Start from: </label>
+                <select class = "form-control" type="text" id="destinationCity" th:field="*{destinationCity}">
+                    <option value="0">Select Destination City</option>
+                    <option th:each="city : ${destination}" th:value="${city.get('CITY_ID')}" th:text="${city.get('CITY_NAME')} + '(' + ${city.get('COUNTRY_NAME')} + ')'" ></option>
+                </select>
+            </div>
 
+            <div class="form-group">
+                <label class="form-label" for="numberOfTravellers"> Number of Travellers: </label>
+                <input class="form-control" type="number" id="numberOfTravellers" th:field="*{numberOfTravellers}" min="1" max="10">
+            </div>
+
+
+            <div class="form-group">
+                <label class="form-label" for="travellingDate"> Time: </label>
+                <input class = "form-control" type="date" id="travellingDate" th:field="*{travellingDate}" size="50" >
+            </div>
+
+            <div class="form-group">
+                <label>Select Class: </label>
+                <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" id="option1" name="option1" class="custom-control-input" value="ECONOMY" th:field="*{type}">
+                    <label class="custom-control-label" for="option1">Economic Class</label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" id="option2" name="option2" class="custom-control-input" value="BUSINESS" th:field="*{type}">
+                    <label class="custom-control-label" for="option2">Business Class</label>
+                </div>
+            </div>
+
+            <div class="form-group align-bottom" style="margin-top: 2em; display: flex">
+                <button type="submit" name="action" value = "search" class="btn btn-lg btn-primary" style="margin-right: .5em; width: 50%">Search</button>
+            </div>
+        </div>
+    </form>
 </div>
 
 <div style="padding-top: 10em">
@@ -40,14 +76,24 @@
 
         <thead style="text-align: center; vertical-align: middle">
         <tr >
-            <th scope="col" th:width="18"><b> Offered By</b></th>
-            <th scope="col" th:width="18"><b> Stops</b></th>
+            <th scope="col" th:width="18"><b> From</b></th>
+            <th scope="col" th:width="18"><b> To</b></th>
+            <th scope="col" th:width="18"><b> Starts At</b></th>
+            <th scope="col" th:width="7"><b> Duration</b></th>
+            <th scope="col" th:width="18"><b> Reaches At</b></th>
+            <th scope="col" th:width="11"></th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="p : ${plans}" >
-            <td scope="row" th:text="${p.getNumberOfTrips()}"></td>
-            <td th:each="trip:${p.trips}" th:text="${trip.tripId}">
+        <tr th:each="p,pStat : ${plans}" style="text-align: center; vertical-align: middle">
+            <td scope="row" th:text="${planInfo[pStat.index].get('SADD') + ' ' + planInfo[pStat.index].get('CS')}"></td>
+            <td scope="row" th:text="${planInfo[pStat.index].get('DADD')+ ' ' + planInfo[pStat.index].get('CD')}"></td>
+            <td scope="row" th:text="${planInfo[pStat.index].get('START_TIME')}"></td>
+            <td scope="row" th:text="${p.getTotalDuration()} + ' ' + ${p.getNumberOfTrips()}">
+                <pre th:text="${p.getTotalDuration()}"></pre>
+                <pre th:text="${p.getNumberOfTrips()}"></pre>
+            </td>
+            <td scope="row" th:text="${planInfo[pStat.index].get('FINISH_TIME')}"></td>
 
             <td>
                 <form th:action="@{'/user/searchResults/book'}" method="post" th:object="${plan}"  >

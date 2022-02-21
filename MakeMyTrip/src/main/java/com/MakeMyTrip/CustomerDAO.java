@@ -6,6 +6,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
@@ -36,9 +37,9 @@ public class CustomerDAO extends JdbcDaoSupport {
     }
 
     public Customer getCustomerInfo(String userId){
-        System.out.println(userId);
+//        System.out.println(userId);
         String sql = "SELECT * FROM customer WHERE user_id = ?";
-        return (Customer) getJdbcTemplate().queryForObject(sql, BeanPropertyRowMapper.newInstance(Customer.class),userId);
+        return getJdbcTemplate().queryForObject(sql, BeanPropertyRowMapper.newInstance(Customer.class),userId);
 
     }
 
@@ -55,5 +56,20 @@ public class CustomerDAO extends JdbcDaoSupport {
         catch (Exception e){
             //
         }
+    }
+
+    public void editProfile(Customer customer, String userId){
+
+        String sql = "UPDATE CUSTOMER SET " +
+                "USER_ID = ?," +
+                "NAME = ?," +
+                "EMAIL = ?," +
+                "PASSWORD = ? " +
+                "WHERE USER_ID = ?";
+        getJdbcTemplate().update(sql,userId,
+                                        customer.getName(),
+                                        customer.getEmail(),
+                                        customer.getPassword(),
+                                       userId);
     }
 }

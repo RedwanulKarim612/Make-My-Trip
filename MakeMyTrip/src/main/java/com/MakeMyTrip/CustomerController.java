@@ -8,6 +8,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -30,6 +31,11 @@ public class CustomerController {
     CityDAO cityDAO;
     @Autowired
     TripDAO tripDAO;
+
+    @Autowired
+    CustomerUserDetailsService customerUserDetailsService;
+    @Autowired
+    JwtUtil jwtUtil;
 
     @GetMapping("/user/profile")
     public ModelAndView getCustomerProfile(){
@@ -144,6 +150,36 @@ public class CustomerController {
                 .headers(headers)
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(new InputStreamResource(bis));
+    }
+
+    @GetMapping("/user/profile/edit")
+    public ModelAndView editProfileView(){
+        ModelAndView modelAndView = new ModelAndView("customer-profile-edit");
+        modelAndView.addObject("customer", customerDAO.getCustomerInfo(SecurityContextHolder.getContext().getAuthentication().getName()));
+        return modelAndView;
+    }
+
+    @PostMapping(path = "/user/profile/edit", params = "action=save")
+    public @ResponseBody  ModelAndView customerProfileEdited(Customer customer, HttpServletResponse response){
+        customerDAO.editProfile(customer, SecurityContextHolder.getContext().getAuthentication().getName());
+        Cookie cookie = new Cookie("jwt", "Bearer" );
+
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("");
+        cookie.setDomain("");
+        final UserDetails userDetails = customerUserDetailsService
+                .loadUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        final String jwt = jwtUtil.generateToken(userDetails);
+        cookie.setValue("Bearer" + jwt);
+        response.addCookie(cookie);
+
+        return new ModelAndView("redirect:/user/profile");
+    }
+
+    @PostMapping(path = "user/profile/edit", params = "action=cancel")
+    public ModelAndView cancelEdit(){
+        return new ModelAndView("redirect:/user/profile");
     }
 
 }
