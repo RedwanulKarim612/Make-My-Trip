@@ -262,10 +262,11 @@ public class TripDAO extends JdbcDaoSupport {
         return mp;
     }
 
-    public boolean bookTickets(TravellersForm form){
+    public List<String> bookTickets(TravellersForm form){
+        List<String> travellerIds = new ArrayList<>();
         String buyer = SecurityContextHolder.getContext().getAuthentication().getName();
         int numTicket = form.getTravellers().size();
-        if(numTicket == 0)return true;
+        if(numTicket == 0)return travellerIds;
         double costOfEachTicket = 0;
         List<List<String>> all = new ArrayList<>();
         String sql;
@@ -274,7 +275,7 @@ public class TripDAO extends JdbcDaoSupport {
             List<String> tickets = new ArrayList<>();
             List<Map<String, Object>> m = getJdbcTemplate().queryForList(sql, t_id, form.getType(), numTicket);
             for(Map<String, Object> tt : m)tickets.add(tt.get("TICKET_ID").toString());
-            if(tickets.size() != numTicket)return false;
+            if(tickets.size() != numTicket)return null;
             all.add(tickets);
             sql = "SELECT PRICE FROM TICKET WHERE TRIP_ID = ? AND TYPE = ? AND BOUGHT_BY IS NULL AND ROWNUM <= 1";
             costOfEachTicket += getJdbcTemplate().queryForObject(sql, Double.class, t_id, form.getType());
@@ -282,7 +283,7 @@ public class TripDAO extends JdbcDaoSupport {
         sql = "SELECT AMOUNT FROM WALLET WHERE CUSTOMER_ID = ?";
         Double balance = getJdbcTemplate().queryForObject(sql, Double.class, buyer);
         if(balance < costOfEachTicket * numTicket){
-            return false;
+            return null;
         }
         int id = 0;
         String Insert_sql = "INSERT INTO TRAVELLER(NAME, IDENTYFICATION_TYPE, IDENTIFICATION_NO) " +
@@ -298,6 +299,7 @@ public class TripDAO extends JdbcDaoSupport {
             }, keyholder);
             Map<String, Object> key = keyholder.getKeys();
             tr.setTravellerId(key.get("TRAVELLER_ID").toString());
+            travellerIds.add(key.get("TRAVELLER_ID").toString());
         }
         for(String t_id : form.getTripIds()){
             List<String> tkt = all.get(id++);
@@ -311,7 +313,7 @@ public class TripDAO extends JdbcDaoSupport {
 
         sql = "UPDATE WALLET SET AMOUNT = ? WHERE CUSTOMER_ID = ?";
         getJdbcTemplate().update(sql, balance - numTicket * costOfEachTicket, buyer);
-        return true;
+        return travellerIds;
     }
 
     public Map<String,Object> getPlanInfo(Plan plan){

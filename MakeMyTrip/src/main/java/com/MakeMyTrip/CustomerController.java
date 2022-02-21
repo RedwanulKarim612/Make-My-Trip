@@ -16,9 +16,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +39,8 @@ public class CustomerController {
     CustomerUserDetailsService customerUserDetailsService;
     @Autowired
     JwtUtil jwtUtil;
+    @Autowired
+    TicketBookingService bookingService;
 
     @GetMapping("/user/profile")
     public ModelAndView getCustomerProfile(){
@@ -131,7 +136,7 @@ public class CustomerController {
     }
 
     @PostMapping(path = "/user/searchResults/book", params = "action=confirm")
-    public ResponseEntity<InputStreamResource> confirmBooking(TravellersForm form, BindingResult bindingResult, HttpServletResponse response){
+    public ModelAndView confirmBooking(TravellersForm form, BindingResult bindingResult, HttpServletResponse response){
 //        for (Traveller traveller: form.getTravellers()){
 //            System.out.println(traveller.getName());
 //        }
@@ -139,17 +144,24 @@ public class CustomerController {
 //        for(String str: form.getTripIds()){
 //            System.out.println(str);
 //        }
-       tripDAO.bookTickets(form);
-        ByteArrayInputStream bis = PDFGenerator.generateTicket(form, tripDAO.getTripsInList(form.getTripIds()));
+        ByteArrayOutputStream bos = bookingService.bookTickets(form);
+        if(bos==null){
+            return new ModelAndView("redirect:/user/home");
+        }
+//        ByteArrayInputStream bis = PDFGenerator.generateTicket(form, tripDAO.getTripsInList(form.getTripIds()));
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Disposition", "inline; filename=ticket.pdf");
+        response.setHeader("Content-Disposition", "inline; filename=ticket.pdf");
+        response.setContentType("application/pdf");
 
-        return ResponseEntity
-                .ok()
-                .headers(headers)
-                .contentType(MediaType.APPLICATION_PDF)
-                .body(new InputStreamResource(bis));
+        try {
+            ServletOutputStream stream = response.getOutputStream();
+            bos.writeTo(stream);
+            stream.flush();
+            return null;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new ModelAndView("redirect:/user/home");
     }
 
     @GetMapping("/user/profile/edit")
