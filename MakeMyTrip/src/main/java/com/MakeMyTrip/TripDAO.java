@@ -140,14 +140,14 @@ public class TripDAO extends JdbcDaoSupport {
 
 
 
-    public List<Trip> searchTripReq(SearchRequest req) {
+    public List<Trip> searchTripReq(SearchRequest req, Date last) {
         String sql =
                 "SELECT t.trip_id, t.BASE_PRICE, t.UPGRADE_PCT, t.START_TIME,t.DURATION,t.VEHICLE_ID, t.START_FROM, t.DESTINATION FROM TRIP t " +
-                        "WHERE t.START_TIME >= ?  " +
+                        "WHERE t.START_TIME BETWEEN ? AND ?\n " +
                         "AND (SELECT L.CITY_ID FROM LOCATION L WHERE t.START_FROM = L.LOCATION_ID) = ? " +
-                        "AND (SELECT COUNT(*) FROM TICKET t2 WHERE t.TRIP_ID = t2.TRIP_ID AND t2.TYPE = ?) >= ? ";
+                        "AND (SELECT COUNT(*) FROM TICKET t2 WHERE t.TRIP_ID = t2.TRIP_ID AND t2.TYPE = ?) >= ?";
         List<Map<String,Object>> ms =  getJdbcTemplate().queryForList(sql, req.getTravellingDate(),
-                req.getStartingCity(), req.getType(), req.getNumberOfTravellers());
+                last, req.getStartingCity(), req.getType(), req.getNumberOfTravellers());
         List<Trip> trips = new ArrayList<>();
 
         for(Map m : ms){
@@ -175,23 +175,22 @@ public class TripDAO extends JdbcDaoSupport {
         return (double)getJdbcTemplate().queryForObject(sql,Double.class,loc);
     }
 
+    Date shiftDateByHour(Date d, double hour){
+        return new Date(d.getTime() + (long)(hour * 3600 * 1000));
+    }
     private List<Plan> searchPlanUtil(SearchRequest req, int dep){
         if(req.getStartingCity().equals(req.getDestinationCity()))return new ArrayList<Plan>(Arrays.asList(new Plan()));
-        System.out.println(req.getTravellingDate());
         if(dep == 0)return null;
+        Date last = shiftDateByHour(req.getTravellingDate(), dep == 3 ? 24 : 7);
         List<Plan> ret = new ArrayList<Plan>();
-        List<Trip> l = searchTripReq(req);
-//        System.out.println(l.size());
+        List<Trip> l = searchTripReq(req, last);
         City c = cd.getCityById(req.getStartingCity());
         for(Trip t : l){
             SearchRequest req2 = new SearchRequest(req);
-//            System.out.println(t);
             City c2 = cd.getCityById(getCity(t.getDestination()));
             req2.setStartingCity(c2.getCityId());
-            req2.setTravellingDate(new Date(t.getDate().getTime() + (long)((t.getDuration() +
-                    c2.getTimezone() -c.getTimezone())*3600*1000)));
-
-//            System.out.println(t.getTripId() + " " + t.getDate() + " d " + req2.getTravellingDate());
+            req2.setTravellingDate(shiftDateByHour(t.getDate(), t.getDuration() +
+                    c2.getTimezone() - c.getTimezone() + 1));
             List<Plan> temp = searchPlanUtil(req2, dep - 1);
             if(temp == null)continue;
             for(Plan p : temp){
@@ -211,11 +210,18 @@ public class TripDAO extends JdbcDaoSupport {
         List<Plan> ret = searchPlanUtil(req, 3);
 
         for(Plan p : ret) {
-            System.out.println(p.getTrips().get(0).getStartFrom());
-            System.out.println("ddd " + new Date((p.getTrips().get(0).getDate().getTime()+(long)(((p.getTrips().get(0).getDuration()*1.0-getTimeZone(p.getTrips().get(0).getStartFrom()))*1000.0*60*60)))));
-            p.setTotalDuration(((new Date((p.getTrips().get(0).getDate().getTime()+(long)(((p.getTrips().get(0).getDuration()*1.0-getTimeZone(p.getTrips().get(0).getStartFrom()))*1000.0*60*60))))).getTime()
-                                    -new Date(p.getTrips().get(p.getTrips().size()-1).getDate().getTime()-(long)(1.0*getTimeZone(p.getTrips().get(p.getTrips().size()-1).getStartFrom())*1000.0*60*60)).getTime())/(1000.0*60*60));
+//            System.out.println(p.getTrips().get(0).getStartFrom());
+//            System.out.println("ddd " + new Date((p.getTrips().get(0).getDate().getTime()+(long)(((p.getTrips().get(0).getDuration()*1.0-getTimeZone(p.getTrips().get(0).getStartFrom()))*1000.0*60*60)))));
+//            p.setTotalDuration(((new Date((p.getTrips().get(0).getDate().getTime()+(long)(((p.getTrips().get(0).getDuration()*1.0-getTimeZone(p.getTrips().get(0).getStartFrom()))*1000.0*60*60))))).getTime()
+//                                    -new Date(p.getTrips().get(p.getTrips().size()-1).getDate().getTime()-(long)(1.0*getTimeZone(p.getTrips().get(p.getTrips().size()-1).getStartFrom())*1000.0*60*60)).getTime())/(1000.0*60*60));
             p.organize(req);
+        }
+        if(req.getOrder().equalsIgnoreCase("PRICE")){
+            Collections.sort(ret, (p1, p2) -> (p1.getPrice() - p2.getPrice() > 0 ? 1 : -1));
+        }else if(req.getOrder().equalsIgnoreCase("NO_OF_TRIPS")){
+            Collections.sort(ret, (p1, p2) -> p1.getNumberOfTrips() - p2.getNumberOfTrips());
+        }else{
+            Collections.sort(ret, (p1, p2) -> (p1.getTotalDuration() - p2.getTotalDuration() > 0 ? 1 : -1));
         }
         System.out.println(ret.size());
         return ret;
