@@ -11,8 +11,9 @@ public class SearchRequest {
     private int numberOfTravellers;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date travellingDate;
-
+    private String order;
     public SearchRequest() {
+        order = "PRICE";
     }
 
     public SearchRequest(String startingCity, String destinationCity, String type, int numberOfTravellers, Date travellingDate) {
@@ -21,6 +22,15 @@ public class SearchRequest {
         this.type = type;
         this.numberOfTravellers = numberOfTravellers;
         this.travellingDate = travellingDate;
+        this.order = "PRICE";
+    }
+    public SearchRequest(String startingCity, String destinationCity, String type, int numberOfTravellers, Date travellingDate, String order) {
+        this.startingCity = startingCity;
+        this.destinationCity = destinationCity;
+        this.type = type;
+        this.numberOfTravellers = numberOfTravellers;
+        this.travellingDate = travellingDate;
+        this.order = order;
     }
 
     public SearchRequest(SearchRequest sr) {
@@ -29,6 +39,7 @@ public class SearchRequest {
         this.type = sr.type;
         this.numberOfTravellers = sr.numberOfTravellers;
         this.travellingDate = sr.travellingDate;
+        this.order = sr.order;
     }
 
     public String getStartingCity() {
@@ -71,6 +82,14 @@ public class SearchRequest {
         this.travellingDate = travellingDate;
     }
 
+    public String getOrder() {
+        return order;
+    }
+
+    public void setOrder(String order) {
+        this.order = order;
+    }
+
     @Override
     public String toString() {
         return "SearchRequest{" +
@@ -79,6 +98,7 @@ public class SearchRequest {
                 ", type='" + type + '\'' +
                 ", numberOfTravellers=" + numberOfTravellers +
                 ", travellingDate=" + travellingDate +
+                ", order='" + order + '\'' +
                 '}';
     }
 }
