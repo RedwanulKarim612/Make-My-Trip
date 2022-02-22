@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 @RestController
 public class CustomerController {
@@ -174,6 +175,9 @@ public class CustomerController {
 
     @PostMapping(path = "/user/profile/edit", params = "action=save")
     public @ResponseBody  ModelAndView customerProfileEdited(Customer customer, HttpServletResponse response){
+        if(!EmailValidate.checkEmail(customer.getEmail())){
+            return new ModelAndView("redirect:/user/profile/edit");
+        }
         customerDAO.editProfile(customer, SecurityContextHolder.getContext().getAuthentication().getName());
         Cookie cookie = new Cookie("jwt", "Bearer" );
 

@@ -157,6 +157,9 @@ public class AuthController {
 
     @RequestMapping(value = "/register", method = RequestMethod.POST )
     public @ResponseBody ModelAndView registerUser(@ModelAttribute("customer") Customer customer, HttpServletResponse response) throws Exception {
+        if(!EmailValidate.checkEmail(customer.getEmail())){
+            return new ModelAndView("redirect:/register");
+        }
         try{
             customerDAO.registerCustomer(customer);
         }
