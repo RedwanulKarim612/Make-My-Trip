@@ -5,6 +5,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -16,6 +17,10 @@ import java.util.List;
 public class CompanyController {
     @Autowired
     CompanyDAO companyDAO;
+    @Autowired
+    JwtUtil jwtUtil;
+    @Autowired
+    CustomerUserDetailsService customerUserDetailsService;
 
     @RequestMapping("/admin/companies")
     @PostMapping(value = "/admin/companies", params = "action=reset")
@@ -121,6 +126,37 @@ public class CompanyController {
         response.addCookie(cookie);
         return new ModelAndView("redirect:/company/login");
     }
+
+    @GetMapping("/company/profile/edit")
+    public ModelAndView editProfileView(){
+        ModelAndView modelAndView = new ModelAndView("company-profile-edit");
+        modelAndView.addObject("company", companyDAO.getCompanyInfo(SecurityContextHolder.getContext().getAuthentication().getName()));
+        return modelAndView;
+    }
+
+    @PostMapping(path = "/company/profile/edit", params = "action=save")
+    public @ResponseBody  ModelAndView companyProfileEdited(Company company, HttpServletResponse response){
+        companyDAO.editProfile(company, SecurityContextHolder.getContext().getAuthentication().getName());
+        Cookie cookie = new Cookie("jwt", "Bearer" );
+
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("");
+        cookie.setDomain("");
+        final UserDetails userDetails = customerUserDetailsService
+                .loadUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        final String jwt = jwtUtil.generateToken(userDetails);
+        cookie.setValue("Bearer" + jwt);
+        response.addCookie(cookie);
+
+        return new ModelAndView("redirect:/company/home");
+    }
+
+    @PostMapping(path = "company/profile/edit", params = "action=cancel")
+    public ModelAndView cancelEdit(){
+        return new ModelAndView("redirect:/company/home");
+    }
+
 
 
 }

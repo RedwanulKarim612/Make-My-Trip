@@ -10,8 +10,9 @@
     <link href="https://getbootstrap.com/docs/4.0/examples/signin/signin.css" rel="stylesheet" crossorigin="anonymous">
 </head>
 <body>
-<div class = "nav-bar" style="margin-top: 2%">
-    <div class="container">
+
+<div th:fragment="company-navbar" class = "nav-bar" style="margin-top: 2%">
+    <div class="container" >
 
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
@@ -22,6 +23,7 @@
                     <li class="nav-item"><a class="nav-link" href="/company/trips">Trips</a></li>
                     <li class="nav-item"><a class="nav-link" href="/company/vehicles">Vehicles</a></li>
                     <li class="nav-item"><a class="nav-link" href="/company/models">Models</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/company/locations">Locations</a></li>
                     <li class="nav-item"><a class="nav-link" href="/company/cities">Cities</a></li>
                     <li class="nav-item"><a class="nav-link" href="/company/countries">Countries</a></li>
                 </ul>
@@ -38,15 +40,15 @@
         <h3 style="text-align: center;margin-bottom: .5em"> Company Information </h3>
     </div>
     <div class="info-div">
-        <h5> <b>Admin Id :</b>  <span th:text="${company.companyId}"></span> </h5>
-        <h5> <b>Email :</b>  <span th:text="${company.companyName}"></span> </h5>
+        <h5> <b>Company Id :</b>  <span th:text="${company.companyId}"></span> </h5>
+        <h5> <b>Company Name :</b>  <span th:text="${company.companyName}"></span> </h5>
         <h5> <b>Password :</b>  <span th:text="${company.password}"></span> </h5>
     </div>
 
     <div style="display: flex">
-        <!--        <a th:href="@{'/admin/countries/' + ${country.countryId} + '/edit'}">-->
-        <!--            <button  value = "edit" class="btn btn-lg btn-secondary" style="margin-right: 1em" >Edit</button>-->
-        <!--        </a>-->
+                <a th:href="@{/company/profile/edit}">
+                    <button  value = "edit" class="btn btn-lg btn-secondary" style="margin-right: 1em" >Edit Profile</button>
+                </a>
         <form th:action="@{'/company/home'}" method="post" >
             <div class="form-group align-bottom" >
 

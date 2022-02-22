@@ -112,7 +112,7 @@
             <td scope="row" th:text="${planInfo[pStat.index].get('SADD') + ' ' + planInfo[pStat.index].get('CS')}"></td>
             <td scope="row" th:text="${planInfo[pStat.index].get('DADD')+ ' ' + planInfo[pStat.index].get('CD')}"></td>
             <td scope="row" th:text="${planInfo[pStat.index].get('START_TIME')}"></td>
-            <td scope="row" th:text="${p.getTotalDuration()} + ' ' + ${p.getNumberOfTrips()}">
+            <td scope="row" th:text="${planInfo[pStat.index].get('DURATION')} + ' (' + ${p.getNumberOfTrips()-1} +' stops)'">
                 <pre th:text="${p.getTotalDuration()}"></pre>
                 <pre th:text="${p.getNumberOfTrips()}"></pre>
             </td>

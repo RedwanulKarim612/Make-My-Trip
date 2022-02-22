@@ -4,6 +4,7 @@ package com.MakeMyTrip;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -13,17 +14,27 @@ public class LocationController {
     LocationDAO locationDAO;
     @Autowired
     CityDAO cityDAO;
-    @RequestMapping("/admin/locations")
-    @PostMapping(path = "admin/locations" , params = "action=reset")
+    @RequestMapping({"/admin/locations","/company/locations"})
+    @PostMapping(path = {"admin/locations","/company/locations"} , params = "action=reset")
     public ModelAndView getAllLocations(){
-        ModelAndView modelAndView = new ModelAndView("admin-locations");
+        ModelAndView modelAndView = new ModelAndView();
+
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"))) modelAndView.setViewName("admin-locations");
+        else modelAndView.setViewName("company-locations");
+
         modelAndView.addObject("locations" , locationDAO.getAllLocations());
+
         return modelAndView;
     }
 
-    @PostMapping(path = "admin/locations", params = "action=search")
+    @PostMapping(path = {"/admin/locations","/company/locations"}, params = "action=search")
     public ModelAndView searchLocationByCity(@RequestParam String cityNameLike){
-        ModelAndView modelAndView = new ModelAndView("admin-locations");
+        ModelAndView modelAndView = new ModelAndView();
+
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"))) modelAndView.setViewName("admin-locations");
+        else modelAndView.setViewName("company-locations");
         try{
             modelAndView.addObject("locations",  locationDAO.searchLocationByCityLike(cityNameLike));
         }

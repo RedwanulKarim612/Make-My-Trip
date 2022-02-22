@@ -82,7 +82,7 @@ public class TripDAO extends JdbcDaoSupport {
     }
 
     public Map<String,Object> getTripByIdAndCompany(String tripId, String companyId) {
-        String sql = "SELECT t.TRIP_ID, l1.LOCATION_ID as SID, l1.address as SADD, l2.location_id as DID, l2.address as DADD,c1.city_name as CS, c2.city_name as CD, " +
+        String sql = "SELECT t.TRIP_ID, t.START_TIME, l1.LOCATION_ID as SID, l1.address as SADD, l2.location_id as DID, l2.address as DADD,c1.city_name as CS, c2.city_name as CD, " +
                 "t.VEHICLE_ID, t.BASE_PRICE,t.UPGRADE_PCT, t.DURATION, com.COMPANY_NAME AS COMPANY_NAME " +
                 "FROM TRIP t join location l1 on (t.start_from = l1.location_id) " +
                 "join location l2 on (t.destination = l2.location_id) " +
@@ -334,7 +334,12 @@ public class TripDAO extends JdbcDaoSupport {
                 "FROM TRIP t join location l1 on (t.destination = l1.location_id) " +
                 "join city c1 on (l1.city_id = c1.city_id) " +
                 "WHERE t.trip_id = ?";
+        double duration = plan.getTotalDuration();
+        int hr  = (int) Math.floor(duration);
+        int min = (int)Math.round((plan.getTotalDuration()-hr)*60);
 
+        String dr = hr + " hr " + min + " min";
+        mp1.put("DURATION", dr);
         Map<String,Object> mp2 = getJdbcTemplate().queryForMap(sql2,mp1.get("START_TIME"), plan.getTotalDuration(),mp1.get("TIMEZONE"),plan.getTrips().get(plan.getTrips().size()-1).getTripId());
         Map<String,Object> mp = new HashMap<>();
         mp.putAll(mp1);

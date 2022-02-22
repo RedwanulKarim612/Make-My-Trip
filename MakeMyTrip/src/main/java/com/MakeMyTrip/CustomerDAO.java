@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class CustomerDAO extends JdbcDaoSupport {
@@ -71,5 +72,11 @@ public class CustomerDAO extends JdbcDaoSupport {
                                         customer.getEmail(),
                                         customer.getPassword(),
                                        userId);
+    }
+
+    public List<Map<String,Object>> getAllCustomerInfo() {
+        String sql = "SELECT C.USER_ID, C.NAME, C.EMAIL, W.AMOUNT " +
+                "FROM CUSTOMER C JOIN WALLET W ON (C.USER_ID = W.CUSTOMER_ID)";
+        return getJdbcTemplate().queryForList(sql);
     }
 }

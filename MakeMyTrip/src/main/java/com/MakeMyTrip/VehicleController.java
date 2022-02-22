@@ -38,7 +38,7 @@ public class VehicleController {
         }
     }
 
-    @RequestMapping("company/vehicles")
+    @RequestMapping("/company/vehicles")
     @PostMapping(path = "/company/vehicles" , params = "action=reset")
     public ModelAndView getAllVehiclesByCompany(){
         ModelAndView modelAndView = new ModelAndView("company-vehicles");
@@ -135,7 +135,7 @@ public class VehicleController {
     }
 
 
-    @PostMapping(value = "/admin/vehicles/{vehicleId}" , params = "action=delete")
+    @PostMapping(value = {"/admin/vehicles/{vehicleId}", "/company/vehicles/{vehicleId}"} , params = "action=delete")
     public ModelAndView deleteVehicle(@PathVariable String vehicleId){
         try{
             vehicleDAO.deleteVehicle(vehicleId);
@@ -143,32 +143,47 @@ public class VehicleController {
         catch (DataIntegrityViolationException e){
         }
 
-        return new ModelAndView("redirect:/admin/vehicles");
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"))) return new ModelAndView("redirect:/admin/vehicles");
+        else return new ModelAndView("redirect:/company/vehicles");
     }
 
-    @RequestMapping("/admin/vehicles/{vehicleId}/edit")
+    @RequestMapping({"/admin/vehicles/{vehicleId}/edit", "/company/vehicles/{vehicleId}/edit"})
     public ModelAndView getEditPage(@PathVariable String vehicleId){
-        ModelAndView modelAndView = new ModelAndView("admin-vehicle-edit");
+
+        ModelAndView modelAndView = new ModelAndView();
+
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"))) modelAndView.setViewName("admin-vehicle-edit");
+        else modelAndView.setViewName("company-vehicle-edit");
         modelAndView.addObject("vehicle",vehicleDAO.getVehicleById(vehicleId));
         modelAndView.addObject("companies", companyDAO.getAllCompanies());
         modelAndView.addObject("models", modelDAO.getAllModels());
         return modelAndView;
     }
 
-    @PostMapping(path = "/admin/vehicles/{vehicleId}/edit", params = "action=save")
+    @PostMapping(path = {"/admin/vehicles/{vehicleId}/edit", "/company/vehicles/{vehicleId}/edit"}, params = "action=save")
     public ModelAndView editVehicle(@PathVariable String vehicleId,Vehicle vehicle){
         try{
+            if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                    .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_COMPANY"))) vehicle.setCompanyId(SecurityContextHolder.getContext().getAuthentication().getName());
             vehicleDAO.editVehicle(vehicleId, vehicle);
         }
         catch (DataIntegrityViolationException e){
             //cannot edit primary key
         }
-        return new ModelAndView("redirect:/admin/vehicles/" + vehicleId);
+
+
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"))) return new ModelAndView("redirect:/admin/vehicles");
+        else return new ModelAndView("redirect:/company/vehicles");
     }
-    @PostMapping(path = "/admin/vehicles/{vehicleId}/edit", params = "action=cancel")
+    @PostMapping(path = {"/admin/vehicles/{vehicleId}/edit", "/company/vehicles/{vehicleId}/edit"}, params = "action=cancel")
     public ModelAndView cancelEdit(@PathVariable String vehicleId){
-        return new ModelAndView("redirect:/admin/vehicles/" + vehicleId );
-    }
+
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"))) return new ModelAndView("redirect:/admin/vehicles");
+        else return new ModelAndView("redirect:/company/vehicles");    }
 
     @GetMapping({"admin/vehicles/add","company/vehicles/add"})
     public ModelAndView getAddVehicleView(Model model){

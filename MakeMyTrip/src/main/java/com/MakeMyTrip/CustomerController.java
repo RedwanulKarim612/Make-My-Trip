@@ -4,6 +4,7 @@ package com.MakeMyTrip;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -192,6 +193,18 @@ public class CustomerController {
     @PostMapping(path = "user/profile/edit", params = "action=cancel")
     public ModelAndView cancelEdit(){
         return new ModelAndView("redirect:/user/profile");
+    }
+
+    @GetMapping("/admin/customers")
+    public ModelAndView getAllCustomersAdmin(){
+        ModelAndView modelAndView = new ModelAndView("admin-customers");
+        try{
+            modelAndView.addObject("customers", customerDAO.getAllCustomerInfo());
+        }
+        catch (EmptyResultDataAccessException e){
+            //
+        }
+        return modelAndView;
     }
 
 }
