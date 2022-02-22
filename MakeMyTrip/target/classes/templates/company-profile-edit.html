@@ -1,0 +1,51 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Make My Trip admin</title>
+    <link th:href="@{/styles/admin_main.css}" type="text/css" href="" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link href="https://getbootstrap.com/docs/4.0/examples/signin/signin.css" rel="stylesheet" crossorigin="anonymous">
+</head>
+<body>
+<div class="nav-div" style="padding-bottom: 3em" th:insert="company-home :: company-navbar"> </div>
+
+<div style="margin-top: 3em">
+    <h3  style="text-align: center;margin-bottom: .5em">Edit Profile Information</h3>
+</div>
+
+<div>
+    <form th:action="@{/company/profile/edit}" method="post" th:object="${company}">
+        <div class = "form-inline" style="width: 60%; margin: 1em auto 1em auto">
+
+            <div class="form-group">
+                <label class="form-label" for="companyId"> Company Id: </label>
+                <input class="form-control" type="text" id="companyId" th:field="*{companyId}" disabled >
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="companyName"> Name: </label>
+                <input class="form-control" type="text" id="companyName" th:field="*{companyName}" >
+            </div>
+
+
+            <div class="form-group">
+                <label class="form-label" for="password"> Password: </label>
+                <input class="form-control" type="text" id="password" th:field="*{password}" >
+            </div>
+
+            <div class="form-group align-bottom" >
+
+                <button type="submit" name="action" value = "save" class="btn btn-lg btn-primary" >save changes</button>
+                <button type="submit" name="action" value = "cancel" class="btn btn-lg btn-secondary" >cancel</button>
+
+            </div>
+        </div>
+
+    </form>
+</div>
+
+</body>
+</html>
