@@ -124,7 +124,7 @@ public class CompanyController {
         cookie.setDomain("");
         cookie.setMaxAge(1);
         response.addCookie(cookie);
-        return new ModelAndView("redirect:/company/login");
+        return new ModelAndView("redirect:/login");
     }
 
     @GetMapping("/company/profile/edit")

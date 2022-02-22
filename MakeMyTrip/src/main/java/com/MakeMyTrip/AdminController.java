@@ -33,7 +33,7 @@ public class AdminController {
         cookie.setDomain("");
         cookie.setMaxAge(1);
         response.addCookie(cookie);
-        return new ModelAndView("redirect:/admin/login");
+        return new ModelAndView("redirect:/login");
     }
 
 

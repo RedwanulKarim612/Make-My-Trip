@@ -7,6 +7,8 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +16,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Collection;
+import java.util.List;
 
 @RestController
 
@@ -30,13 +34,40 @@ public class AuthController {
 
     @RequestMapping(value = "/login", method = RequestMethod.POST )
     public @ResponseBody ModelAndView customerLogin(@ModelAttribute("request") AuthenticationRequest authenticationRequest, HttpServletResponse response){
-        try {
-            createAuthenticationToken(authenticationRequest,response);
-        } catch (Exception e) {
-            return new ModelAndView("redirect:/login");
+        Cookie cookie = new Cookie("jwt", "Bearer" );
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("/");
+        cookie.setDomain("");
+        try{authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(),
+                        authenticationRequest.getPassword()));
         }
-        ModelAndView modelAndView  = new ModelAndView("redirect:/user/home");
-        return modelAndView;
+        catch (BadCredentialsException e){
+            System.out.println("bad credential");
+            cookie.setMaxAge(0);
+            return new ModelAndView("redirect:/login");
+//            response.addCookie(cookie);
+        }
+        final UserDetails userDetails = customerUserDetailsService
+                .loadUserByUsername(authenticationRequest.getUsername());
+        final String jwt = jwtUtil.generateToken(userDetails);
+        cookie.setValue("Bearer" + jwt);
+
+        Collection<GrantedAuthority> authorityList = (Collection<GrantedAuthority>) userDetails.getAuthorities();
+//        for (GrantedAuthority a : authorityList){
+//            System.out.println(a.getAuthority());
+//        }
+//        System.out.println(jwtUtil.getUsernameFromToken(jwt));
+
+        response.addCookie(cookie);
+        if(authorityList.contains(new SimpleGrantedAuthority("ROLE_ADMIN")))
+            return new ModelAndView("redirect:/admin/home");
+        else if(authorityList.contains(new SimpleGrantedAuthority("ROLE_COMPANY")))
+            return new ModelAndView("redirect:/company/home");
+        else  return new ModelAndView("redirect:/user/home");
+
+
     }
 
     @RequestMapping(value = "/admin/login", method = RequestMethod.POST )
