@@ -22,8 +22,8 @@
         <h5> <b>Duration :</b>  <span th:text="${trip.get('DURATION')}"></span> </h5>
         <h5> <b>Vehicle Used :</b>  <span th:text="${trip.get('VEHICLE_ID')}"></span> </h5>
         <h5> <b>Company :</b>  <span th:text="${trip.get('COMPANY_NAME')}"></span> </h5>
-        <h5> <b>Base price :</b>  <span th:text="${trip.get('BASE_PRICE')}"></span> </h5>
-        <h5> <b>Upgrade Pct :</b>  <span th:text="${trip.get('UPGRADE_PCT')}"></span> </h5>
+        <h5> <b>Base price :</b>  <span th:text="${trip.get('BASE_PRICE')} +' Tk'"></span> </h5>
+        <h5> <b>Upgrade Pct :</b>  <span th:text="${trip.get('UPGRADE_PCT')} + '%'"></span> </h5>
 
 
     </div>
@@ -49,7 +49,7 @@
                     <td scope="row" th:text="${ticket.get('TICKET_ID')}"></td>
                     <td scope="row" th:text="${ticket.get('TYPE')}"></td>
                     <td scope="row" th:text="${ticket.get('SEAT_NO')}"></td>
-                    <td scope="row" th:text="${ticket.get('PRICE')}"></td>
+                    <td scope="row" th:text="${ticket.get('PRICE')} + ' Tk'"></td>
                     <td scope="row" th:text="${ticket.get('NAME')}"></td>
                     <td scope="row" th:text="${ticket.get('IDENTYFICATION_TYPE')}"></td>
                     <td scope="row" th:text="${ticket.get('IDENTIFICATION_NO')}"></td>

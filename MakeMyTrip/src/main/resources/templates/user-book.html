@@ -21,7 +21,7 @@
     <h3 style="text-align: center;margin-bottom: .5em ; margin-top: 3em">Information: </h3>
     <h5 style="margin-left: 3em">Number of Passengers: <span th:text="${plan.getRequestedTickets()}"> </span></h5>
     <h5 style="margin-left: 3em">Number of stops: <span th:text="${plan.getNumberOfTrips()}-1"> </span></h5>
-    <h5 style="margin-left: 3em">Total Cost: <span th:text="${plan.getRequestedTickets()}*${plan.getPrice()}"> </span></h5>
+    <h5 style="margin-left: 3em">Total Cost: <span th:text="${plan.getRequestedTickets()}*${plan.getPrice()} + ' Tk'"> </span></h5>
     <h5 style="margin-left: 3em">From: <span th:text="${trips.get(0).get('CS')}"> </span></h5>
     <h5 style="margin-left: 3em">To: <span th:text="${trips.get(trips.size()-1).get('CD')}"> </span></h5>
 </div>
@@ -40,7 +40,7 @@
 </div>
 
 <div >
-    <h3 style="text-align: center;margin-bottom: .5em ; margin-top: 3em"> <b>Fill Up Travellers' Information: <b></h3>
+    <h3 style="text-align: center;margin-bottom: .5em ; margin-top: 3em"> <b>Fill Up Travellers' Information: </b></h3>
 </div>
 
 <div>

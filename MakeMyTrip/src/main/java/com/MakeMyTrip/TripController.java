@@ -111,7 +111,7 @@ public class TripController {
         return modelAndView;
     }
 
-    @PostMapping(path = {"admin/trips/add","/company/trips/add"})
+    @PostMapping(path = {"/admin/trips/add","/company/trips/add"})
     public ModelAndView addTrip(TripAddRequest request){
 //        System.out.println(trip);
 

@@ -24,7 +24,7 @@ public class TicketDAO extends JdbcDaoSupport {
         String sql = "SELECT T.TICKET_ID, T.PRICE, T.TYPE, T.SEAT_NO , TV.*\n" +
                 "FROM TICKET T\n" +
                 "JOIN TRAVELLER TV ON(T.TRAVELLER_ID = TV.TRAVELLER_ID)\n" +
-                "WHERE T.BOUGHT_BY = ? AND T.TRIP_ID = ?";
+                "WHERE T.BOUGHT_BY = ? AND T.TRIP_ID = ? ORDER BY T.TYPE";
         return getJdbcTemplate().queryForList(sql, SecurityContextHolder.getContext().getAuthentication().getName(),tripId);
     }
 

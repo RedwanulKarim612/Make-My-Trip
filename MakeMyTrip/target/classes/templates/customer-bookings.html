@@ -14,8 +14,11 @@
 <div>
     <div class="nav-div" style="padding-bottom: 3em" th:insert="home :: customer-navbar"> </div>
 
+    <div>
+        <h3 style="text-align: center;margin-bottom: .5em; padding-top: 3em"> All Bookings </h3>
+    </div>
 
-    <div style="padding-top: 10em">
+    <div style="padding-top: 3em">
         <div >
             <table class="table table-dark table-striped sortable" style="width: 80%; margin: 1em auto 1em auto">
 
@@ -40,7 +43,7 @@
                     <td scope="row" th:text="${trip.get('SC')}"></td>
                     <td scope="row" th:text="${trip.get('DC')}"></td>
                     <td scope="row" th:text="${trip.get('START_TIME')}"></td>
-                    <td scope="row" th:text="${trip.get('DURATION')}"></td>
+                    <td scope="row" th:text="${trip.get('DURATION')} + ' hr' "></td>
                     <td scope="row" th:text="${trip.get('CNT')}"></td>
                     <td>
                         <a th:href="@{'/user/bookings/' + ${trip.get('TRIP_ID')}}">view</a>

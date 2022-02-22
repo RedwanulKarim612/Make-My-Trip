@@ -357,6 +357,7 @@ public class TripDAO extends JdbcDaoSupport {
     }
 
     public void addTripForDays(TripAddRequest request) {
+//        System.out.println(request);
         String sql = "CALL add_trips_for_multiple_days(?,?,?,?,?,?,?,?)";
         getJdbcTemplate().update(sql,request.getBasePrice(),request.getUpgradePct(),request.getDate(),request.getDuration(),request.getStartFrom(),request.getDestination(),request.getVehicleId(),request.getNumberOfTrips());
     }
