@@ -9,28 +9,9 @@
     <link href="https://getbootstrap.com/docs/4.0/examples/signin/signin.css" rel="stylesheet" crossorigin="anonymous">
 </head>
 <body>
-<div class = "nav-bar">
-    <div class="container">
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <div class="container-fluid">
-                <a href="#" class="navbar-brand"> Make My Trip</a>
 
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link" href="/admin/home">home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/admin/trips">Trips</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/admin/vehicles">Vehicles</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/admin/models">Models</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/admin/companies">Companies</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/admin/locations">Locations</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/admin/cities">Cities</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/admin/countries">Countries</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/admin/transactions">Transactions</a></li>
-                </ul>
-            </div>
-        </nav>
+<div class="nav-div" style="padding-bottom: 3em" th:insert="admin-home :: admin-navbar"> </div>
 
-    </div>
-</div>
 
 <div class="main-div" >
     <div>

@@ -79,4 +79,11 @@ public class CustomerDAO extends JdbcDaoSupport {
                 "FROM CUSTOMER C JOIN WALLET W ON (C.USER_ID = W.CUSTOMER_ID)";
         return getJdbcTemplate().queryForList(sql);
     }
+
+    public List<Map<String,Object>> searchCustomer(String customerName) {
+
+        String sql = "SELECT C.USER_ID, C.NAME, C.EMAIL, W.AMOUNT " +
+                "FROM CUSTOMER C JOIN WALLET W ON (C.USER_ID = W.CUSTOMER_ID) WHERE C.NAME LIKE ?";
+        return getJdbcTemplate().queryForList(sql, customerName+ "%");
+    }
 }

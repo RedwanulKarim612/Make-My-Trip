@@ -195,11 +195,24 @@ public class CustomerController {
         return new ModelAndView("redirect:/user/profile");
     }
 
-    @GetMapping("/admin/customers")
+    @RequestMapping("/admin/customers")
+    @PostMapping(value = "/admin/customers" , params = "action=reset")
     public ModelAndView getAllCustomersAdmin(){
         ModelAndView modelAndView = new ModelAndView("admin-customers");
         try{
             modelAndView.addObject("customers", customerDAO.getAllCustomerInfo());
+        }
+        catch (EmptyResultDataAccessException e){
+            //
+        }
+        return modelAndView;
+    }
+
+    @PostMapping(path = "/admin/customers", params = "action=search")
+    public ModelAndView searchCustomer(@RequestParam String customerName){
+        ModelAndView modelAndView = new ModelAndView("admin-customers");
+        try{
+            modelAndView.addObject("customers" , customerDAO.searchCustomer(customerName));
         }
         catch (EmptyResultDataAccessException e){
             //
