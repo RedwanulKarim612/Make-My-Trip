@@ -40,7 +40,8 @@ public class TripDAO extends JdbcDaoSupport {
                 "from TRIP t JOIN LOCATION l1 ON(t.START_FROM = l1.LOCATION_ID)\n" +
                 "JOIN LOCATION l2 on(t.DESTINATION = l2.LOCATION_ID)\n" +
                 "JOIN CITY c1 ON(l1.CITY_ID = c1.CITY_id)\n" +
-                "JOIN CITY c2 on(l2.CITY_ID = c2.CITY_ID) ";
+                "JOIN CITY c2 on(l2.CITY_ID = c2.CITY_ID) " +
+                "ORDER BY t.START_TIME";
         return getJdbcTemplate().queryForList(sql);
     }
 
@@ -77,7 +78,7 @@ public class TripDAO extends JdbcDaoSupport {
                         "JOIN CITY c1 ON(l1.CITY_ID = c1.CITY_id)\n" +
                         "JOIN CITY c2 on(l2.CITY_ID = c2.CITY_ID)\n " +
                         "JOIN VEHICLE v on(t.vehicle_id = v.vehicle_id)" +
-                        "WHERE v.company_id = ?";
+                        "WHERE v.company_id = ? ORDER BY t.START_TIME";
         return getJdbcTemplate().queryForList(sql,companyId);
     }
 
@@ -101,7 +102,7 @@ public class TripDAO extends JdbcDaoSupport {
                         "JOIN LOCATION l2 on(t.DESTINATION = l2.LOCATION_ID)\n" +
                         "JOIN CITY c1 ON(l1.CITY_ID = c1.CITY_id)\n" +
                         "JOIN CITY c2 on(l2.CITY_ID = c2.CITY_ID) " +
-                        "where c1.CITY_NAME like ?";
+                        "where c1.CITY_NAME like ? ORDER BY t.START_TIME";
         return getJdbcTemplate().queryForList(sql,cityName.concat("%"));
     }
 
@@ -114,7 +115,7 @@ public class TripDAO extends JdbcDaoSupport {
                         "JOIN CITY c1 ON(l1.CITY_ID = c1.CITY_id)\n" +
                         "JOIN CITY c2 on(l2.CITY_ID = c2.CITY_ID)\n " +
                         "JOIN VEHICLE v on(t.vehicle_id = v.vehicle_id) " +
-                        "WHERE v.company_id = ? and c1.CITY_NAME like ?";
+                        "WHERE v.company_id = ? and c1.CITY_NAME like ? ORDER BY t.START_TIME";
         return getJdbcTemplate().queryForList(sql,companyId,cityName.concat("%"));
     }
 
@@ -145,7 +146,8 @@ public class TripDAO extends JdbcDaoSupport {
                 "SELECT t.trip_id, t.BASE_PRICE, t.UPGRADE_PCT, t.START_TIME,t.DURATION,t.VEHICLE_ID, t.START_FROM, t.DESTINATION FROM TRIP t " +
                         "WHERE t.START_TIME BETWEEN ? AND ?\n " +
                         "AND (SELECT L.CITY_ID FROM LOCATION L WHERE t.START_FROM = L.LOCATION_ID) = ? " +
-                        "AND (SELECT COUNT(*) FROM TICKET t2 WHERE t.TRIP_ID = t2.TRIP_ID AND t2.TYPE = ?) >= ?";
+                        "AND (SELECT COUNT(*) FROM TICKET t2 WHERE t.TRIP_ID = t2.TRIP_ID AND t2.TYPE = ?) >= ? " +
+                        "AND t.START_TIME >= sysdate";
         List<Map<String,Object>> ms =  getJdbcTemplate().queryForList(sql, req.getTravellingDate(),
                 last, req.getStartingCity(), req.getType(), req.getNumberOfTravellers());
         List<Trip> trips = new ArrayList<>();

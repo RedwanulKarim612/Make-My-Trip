@@ -34,7 +34,7 @@
             </div>
 
             <div class="form-group">
-                <label class="form-label" for="destinationCity"> Start from: </label>
+                <label class="form-label" for="destinationCity"> Destination: </label>
                 <select class = "form-control" type="text" id="destinationCity" th:field="*{destinationCity}">
                     <option value="0">Select Destination City</option>
                     <option th:each="city : ${destination}" th:value="${city.get('CITY_ID')}" th:text="${city.get('CITY_NAME')} + '(' + ${city.get('COUNTRY_NAME')} + ')'" ></option>

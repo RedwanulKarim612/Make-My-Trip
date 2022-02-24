@@ -131,7 +131,7 @@ public class CustomerController {
         modelAndView.addObject("trips", tripDAO.getTripsInPlan(plan));
         modelAndView.addObject("plan", plan);
 
-        System.out.println(plan);
+//        System.out.println(plan);
 //        System.out.println("d" + plan.getRequestedTickets());
         modelAndView.addObject("form", new TravellersForm(plan.getRequestedTickets(),plan.getNumberOfTrips()));
         return modelAndView;
