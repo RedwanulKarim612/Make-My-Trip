@@ -70,7 +70,7 @@ create user c##xyz identified by xyz;
 grant dba to c##xyz;
 ```
     
-   <li> To create tables and populate them run commands from MMT_DUMP.  
+   <li> To create tables and populate them run commands from <a href="Dump Files/MMT_DUMP">MMT_DUMP</a>.  
      
     
 </ul>
