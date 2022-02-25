@@ -52,6 +52,7 @@ Make My Trip is a platform where a company can add trips between two cities and 
     </ul>
   </li>
 </ul>
+<b>Note:</b> Admin login credentials can be found in ADMIN table. You may need to add some data to successfully search trips.
 
 ## Instructions:
 
@@ -70,7 +71,7 @@ create user c##xyz identified by xyz;
 grant dba to c##xyz;
 ```
     
-   <li> To create tables and populate them run commands from <a href="Dump Files/MMT_DUMP">MMT_DUMP.sql</a>.  
+   <li> To create tables and populate them run commands from Dump Files/MMT_DUMP.sql.  
      
     
 </ul>
