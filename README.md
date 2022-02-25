@@ -84,5 +84,5 @@ grant dba to c##xyz;
 ```
 java -jar target/MakeMyTrip-0.0.1-SNAPSHOT.jar
 ```
-  <li> Connect to localhost:8080 and login using valid credentials
+  <li> Connect to localhost:8080/login and login using valid credentials
 </ul>
