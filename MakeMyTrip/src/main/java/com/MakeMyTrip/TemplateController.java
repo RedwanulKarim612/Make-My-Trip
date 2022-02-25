@@ -85,6 +85,11 @@ public class TemplateController {
         return "company-login";
     }
 
+    @GetMapping("/")
+    public ModelAndView getIndex(){
+        return new ModelAndView("redirect:/login");
+    }
+
 
 //    @GetMapping("/user/home")
 //    public String getHomePage(){
